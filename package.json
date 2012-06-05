@@ -1,0 +1,12 @@
+{
+  "name": "jquery-mobile-template",
+  "fullName": "jQuery Mobile Template",
+  "version": "0.0.1",
+  "description": "Template based on jQuery Mobile (compatible with all mobile platforms).",
+  "joshfire": {
+    "images": {
+      "small": "http://i.imgur.com/sm0MA.png",
+      "big": "http://i.imgur.com/x5NbC.png"
+    }
+  }
+}
