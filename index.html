@@ -15,7 +15,7 @@
           app = Joshfire.factory.config.app,
           firstTime = true;
 
-      function createListPage( dataSourceId, data ) {
+      function createListPage( dataSourceId, data, urlObj ) {
 
         var $page = $( "#list-page" ),
 
@@ -72,9 +72,12 @@
         // to be the url that shows up in the browser's location field,
         // so set the dataUrl option to the URL for the category
         // we just loaded.
-        if ( typeof urlObj !== "undefined" ) {
+        if (urlObj) {
           options.dataUrl = urlObj.href;
         }
+
+        options.allowSamePageTransition = true;
+        options.transition = "none";
 
         // Now call changePage() and tell it to switch to the page we just modified.
         $.mobile.changePage( $page, options );
@@ -102,7 +105,7 @@
         });
       }
 
-      function createArticlePage( dataSourceId, articleId, data ) {
+      function createArticlePage( dataSourceId, articleId, data, urlObj ) {
         var $page = $( "#content-page" ),
 
             // Get the header for the page.
@@ -158,9 +161,10 @@
         // to be the url that shows up in the browser's location field,
         // so set the dataUrl option to the URL for the category
         // we just loaded.
-        if ( typeof urlObj !== "undefined" ) {
-          options.dataUrl = urlObj.href;
-        }
+        options.dataUrl = urlObj.href;
+
+        options.allowSamePageTransition = true;
+        options.transition = "slide";
 
         // Now call changePage() and tell it to switch to the page we just modified.
         $.mobile.changePage( $page, options );
@@ -208,11 +212,13 @@
             var articleId = matching[2];
 
             if ( dataSourceId !== undefined && articleId === undefined ) {
-              createListPage( dataSourceId, data );
+              createListPage( dataSourceId, data, u );
             } else if ( dataSourceId !== undefined ) {
-              createArticlePage( dataSourceId, articleId, data );
+              createArticlePage( dataSourceId, articleId, data, u );
             }
           }
+
+          e.preventDefault();
         } else if (firstTime) { // first load (loading first page and ???)
           console.log( "Loading first page" );
           firstTime = false;
@@ -220,7 +226,7 @@
           // Let's assume we're launching the application for the first time
           // Building the list page for the first datasource
           // TODO: later, just redirect to /datasource-0 and let the corresponding function handle it
-          createListPage( 0, data );
+          createListPage( 0, data, u );
 
           e.preventDefault();
         }
@@ -230,19 +236,19 @@
   <body>
 
     <div data-role="page" id="list-page">
-      <div data-role="header" data-position="fixed">
+      <div data-role="header" data-position="fixed" data-id="header">
         <h1>App Name</h1>
       </div>
       <div data-role="content" id="list"></div>
-      <div data-role="footer" data-position="fixed" id="footer"></div>
+      <div data-role="footer" data-position="fixed" data-id="footer"></div>
     </div>
 
     <div data-role="page" id="content-page" data-add-back-btn="true">
-      <div data-role="header" data-position="fixed" id="header">
+      <div data-role="header" data-position="fixed" data-id="header">
         <h1>App Name</h1>
       </div>
       <div data-role="content" id="content"></div>
-      <div data-role="footer" data-position="fixed" id="footer"></div>
+      <div data-role="footer" data-position="fixed" data-id="footer"></div>
     </div>
 
   </body>
