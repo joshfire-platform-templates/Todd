@@ -1,10 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="utf-8" />
-    <title>Hello World</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <title>My App</title>
+    <link rel="stylesheet"  href="css/jquery.mobile-1.1.0.css">
+    <script data-joshfire-bootstrap src="http://127.0.0.1:40021/bootstrap/4fccb70983ea709211000022/4fb647273428930100003768/auto/"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.mobile-1.1.0.js"></script>
+    <script>
+      // TODO check Joshfire.factory.config.datasources.main > 0
+
+      var dataSources = Joshfire.factory.getDataSource( "main" ).children,
+          app = Joshfire.factory.config.app,
+          firstTime = true;
+
+      function createListPage( dataSourceId, data ) {
+
+        var $page = $( "#list-page" ),
+
+            // Get the header for the page.
+            $header = $page.children( ":jqmData(role=header)" ),
+
+            // Get the content area element for the page.
+            $content = $page.children( ":jqmData(role=content)" ),
+
+            // Get the footer for the page.
+            $footer = $page.children( ":jqmData(role=footer)" ),
+
+            // The markup we are going to inject into the content area of the page.
+            listMarkup = "<ul data-role='listview'>";
+
+            // The markup we are going to inject into the footer area of the page.
+            footerMarkup = "<div data-role='navbar'><ul>";
+
+            // Set the options used when changing page.
+            options = data.options;
+
+        // Empty the content area
+        $content.html( "" );
+
+        // Generate a navbar item for each datasources
+        // and add it to our markup.
+        for ( var i = 0; i < dataSources.length; i++ ) {
+          footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='grid'>" + dataSources[i].name + "</a></li>";
+        }
+        footerMarkup += "</ul></div>";
+
+        // Find the h1 element in our header and inject the name of the app into it.
+        $header.find( "h1" ).html( app.name );
+
+        // Inject the footer items markup into the footer element.
+        $footer.html( footerMarkup );
+
+        // Pages are lazily enhanced. We call page() on the page
+        // element to make sure it is always enhanced before we
+        // attempt to enhance the listview markup we just injected.
+        // Subsequent calls to page() are ignored since a page/widget
+        // can only be enhanced once.
+        $page.page();
+
+        $footer.trigger( "create" );
+
+        // Now that the page is enhanced, highilight the good item on the footer.
+        $footer.find( "li:nth-child(" + ( parseInt(dataSourceId, 10) + 1 ) + ") a" ).addClass( "ui-btn-active" );
+
+        // Also, display the loading spinner, while waiting for data
+        $.mobile.showPageLoadingMsg();
+
+        // We don't want the data-url of the page we just modified
+        // to be the url that shows up in the browser's location field,
+        // so set the dataUrl option to the URL for the category
+        // we just loaded.
+        if ( typeof urlObj !== "undefined" ) {
+          options.dataUrl = urlObj.href;
+        }
+
+        // Now call changePage() and tell it to switch to the page we just modified.
+        $.mobile.changePage( $page, options );
+
+        // Everything is done but loading the content. Display the spinner.
+        $.mobile.showPageLoadingMsg();
+
+        // Get the items from our dataSource
+        Joshfire.factory.getDataSource( "main" ).children[dataSourceId].find( {}, function ( err, data ) {
+          if ( err ) { console.error( err ); return; }
+
+          // Generate a list item for each item in the category and add it to our markup.
+          for ( var i = 0; i < data.entries.length; i++ ) {
+            listMarkup += "<li><a href='#datasource=" + dataSourceId + "&article=" + i + "' data-icon='grid'>" + data.entries[i].name + "</a></li>";
+          }
+          listMarkup += "</ul>";
+
+          // Inject the category items markup into the content element.
+          $content.html( listMarkup );
+
+          // Enhance the listview we just injected.
+          $content.find( ":jqmData(role=listview)" ).listview();
+
+          $.mobile.hidePageLoadingMsg();
+        });
+      }
+
+      function createArticlePage( dataSourceId, articleId, data ) {
+        var $page = $( "#content-page" ),
+
+            // Get the header for the page.
+            $header = $page.children( ":jqmData(role=header)" ),
+
+            // Get the content area element for the page.
+            $content = $page.children( ":jqmData(role=content)" ),
+
+            // Get the footer for the page.
+            $footer = $page.children( ":jqmData(role=footer)" ),
+
+            // The markup we are going to inject into the content area of the page.
+            itemMarkup = "";
+
+            // The markup we are going to inject into the footer area of the page.
+            footerMarkup = "<div data-role='navbar'><ul>";
+
+            // Set the options used when changing page.
+            options = data.options;
+
+        // Empty the content area
+        $content.html( "" );
+
+        // Generate a navbar item for each datasources
+        // and add it to our markup.
+        for ( var i = 0; i < dataSources.length; i++ ) {
+          footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='grid'>" + dataSources[i].name + "</a></li>";
+        }
+        footerMarkup += "</ul></div>";
+
+        // Find the h1 element in our header and inject the name of the app into it.
+        $header.find( "h1" ).html( app.name );
+
+        // Inject the footer items markup into the footer element.
+        $footer.html( footerMarkup );
+
+        // Pages are lazily enhanced. We call page() on the page
+        // element to make sure it is always enhanced before we
+        // attempt to enhance the listview markup we just injected.
+        // Subsequent calls to page() are ignored since a page/widget
+        // can only be enhanced once.
+        $page.page();
+
+        $footer.trigger( "create" );
+
+        // Now that the page is enhanced, highilight the good item on the footer.
+        $footer.find( "li:nth-child(" + ( parseInt(dataSourceId, 10) + 1 ) + ") a" ).addClass( "ui-btn-active" );
+
+        // Also, display the loading spinner, while waiting for data
+        $.mobile.showPageLoadingMsg();
+
+        // We don't want the data-url of the page we just modified
+        // to be the url that shows up in the browser's location field,
+        // so set the dataUrl option to the URL for the category
+        // we just loaded.
+        if ( typeof urlObj !== "undefined" ) {
+          options.dataUrl = urlObj.href;
+        }
+
+        // Now call changePage() and tell it to switch to the page we just modified.
+        $.mobile.changePage( $page, options );
+
+        // Everything is done but loading the content. Display the spinner.
+        $.mobile.showPageLoadingMsg();
+
+        // Get the items from our dataSource
+        Joshfire.factory.getDataSource( "main" ).children[dataSourceId].find( {}, function ( err, data ) {
+          if ( err ) { console.error( err ); return; }
+
+          var item = data.entries[articleId];
+
+          // Generate markup for the item
+          if (item) {
+            itemMarkup += "<h1>" + item.name + "</h1><p>" + item.description + "</p>";
+          }
+
+          // Inject the category items markup into the content element.
+          $content.html( itemMarkup );
+
+          // Enhance the listview we just injected.
+          // $content.find( ":jqmData(role=listview)" ).listview();
+
+          $.mobile.hidePageLoadingMsg();
+        });
+      }
+
+      // Listen for any attempts to call changePage()
+      $(document).bind( "pagebeforechange", function( e, data ) {
+        console.log( "pagebeforechange" );
+
+        // string = app is asking us to load a page by URL
+        if ( typeof data.toPage === "string" ) {
+          console.log( "Loading ", data.toPage );
+
+          var u = $.mobile.path.parseUrl( data.toPage ),
+              re = /^#datasource/;
+
+          // We only want to handle URLs that request the data for
+          // a specific datasource.
+          if ( u.hash.search(re) !== -1 ) {
+            var matching = u.hash.match(/.*datasource=([0-9]+)(?:&article=([0-9]+))*/);
+            var dataSourceId = matching[1];
+            var articleId = matching[2];
+
+            if ( dataSourceId !== undefined && articleId === undefined ) {
+              createListPage( dataSourceId, data );
+            } else if ( dataSourceId !== undefined ) {
+              createArticlePage( dataSourceId, articleId, data );
+            }
+          }
+        } else if (firstTime) { // first load (loading first page and ???)
+          console.log( "Loading first page" );
+          firstTime = false;
+
+          // Let's assume we're launching the application for the first time
+          // Building the list page for the first datasource
+          // TODO: later, just redirect to /datasource-0 and let the corresponding function handle it
+          createListPage( 0, data );
+
+          e.preventDefault();
+        }
+      });
+    </script>
   </head>
   <body>
-    <p>Hi, there.</p>
+
+    <div data-role="page" id="list-page">
+      <div data-role="header" data-position="fixed">
+        <h1>App Name</h1>
+      </div>
+      <div data-role="content" id="list"></div>
+      <div data-role="footer" data-position="fixed" id="footer"></div>
+    </div>
+
+    <div data-role="page" id="content-page" data-add-back-btn="true">
+      <div data-role="header" data-position="fixed" id="header">
+        <h1>App Name</h1>
+      </div>
+      <div data-role="content" id="content"></div>
+      <div data-role="footer" data-position="fixed" id="footer"></div>
+    </div>
+
   </body>
 </html>
