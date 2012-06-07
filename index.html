@@ -8,6 +8,7 @@
     <script data-joshfire-bootstrap src="http://127.0.0.1:40021/bootstrap/4fccb70983ea709211000022/4fb647273428930100003768/auto/"></script>
     <script src="js/jquery.js"></script>
     <script src="js/jsrender.js"></script>
+    <script src="js/mediaplayerlib.js"></script>
     <script src="js/jquery.mobile-1.1.0.js"></script>
     <script>
       // TODO check Joshfire.factory.config.datasources.main > 0
@@ -41,6 +42,8 @@
       }
 
       function createPage( dataSourceId, data, urlObj, articleId ) {
+
+        $( "#video-player" ).html( "" );
 
         if ( articleId === undefined ) {
           var $page = $( "#list-page" );
@@ -179,6 +182,14 @@
             // Inject the category items markup into the content element
             // and trigger a create event to enhance the fresh markup.
             $content.html( contentMarkup ).trigger( 'create' );
+
+            // mediaFactory needs the markup to inserted into the DOM before adding its
+            // own code.
+            if ( item.itemType == "VideoObject" ) {
+              mediaFactory.insert(item, { strategy: "html5" }, 'video-player', function(err) {
+                if (err) console.error(err);
+              });
+            }
           }
 
           $.mobile.hidePageLoadingMsg();
@@ -224,6 +235,11 @@
         }
       });
     </script>
+    <style>
+      #video-player iframe {
+        max-width: 100% !important;
+      }
+    </style>
   </head>
   <body>
 
@@ -291,7 +307,7 @@
 
     <script id="videoObjectTemplate" type="text/x-jsrender">
       <h1>{{:name}}</h1>
-      <video src="{{:embedURL}}" style="max-width:100%"></video>
+      <div id="video-player" style="max-width:100%"></div>
       <p>{{:description}}</p>
       <p>Posted by <em>{{:author[0].name}}</em></p>
     </script>
