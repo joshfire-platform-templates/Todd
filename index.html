@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <title>My App</title>
     <link rel="stylesheet"  href="css/jquery.mobile-1.1.0.css">
-    <script data-joshfire-bootstrap src="http://127.0.0.1:40021/bootstrap/4fccb70983ea709211000022/4fb647273428930100003768/auto/"></script>
+    <script data-joshfire-bootstrap></script>
     <script src="js/jquery.js"></script>
     <script src="js/jsrender.js"></script>
     <script src="js/mediaplayerlib.js"></script>
@@ -73,8 +73,7 @@
         // Empty the content area
         $content.html( "" );
 
-        // Generate a navbar item for each datasources
-        // and add it to our markup.
+        // Generate a navbar item for each datasources and add it to our markup.
         for ( var i = 0; i < dataSources.length; i++ ) {
           footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='grid'>" + dataSources[i].name + "</a></li>";
         }

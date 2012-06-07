@@ -51,37 +51,38 @@
           "title": "Tabs titles",
           "type": "array",
           "items": {
-            "title": "Short tab title (max. 10 characters)",
-            "type": "string",
-            "maxLength": 10
-          }
-        },
-        "tabicons": {
-          "title": "Tabs icons",
-          "type": "array",
-          "items": {
-            "title": "Tab icon",
-            "type": "string",
-            "enum": [
-              "arrow-l",
-              "arrow-r",
-              "arrow-u",
-              "arrow-d",
-              "delete",
-              "plus",
-              "minus",
-              "check",
-              "gear",
-              "refresh",
-              "forward",
-              "back",
-              "grid",
-              "star",
-              "alert",
-              "info",
-              "home",
-              "search"
-            ]
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Short tab title (max. 10 characters)",
+                "type": "string",
+                "maxLength": 10
+              },
+              "icon": {
+                "title": "Tab icon",
+                "type": "string",
+                "enum": [
+                  "arrow-l",
+                  "arrow-r",
+                  "arrow-u",
+                  "arrow-d",
+                  "delete",
+                  "plus",
+                  "minus",
+                  "check",
+                  "gear",
+                  "refresh",
+                  "forward",
+                  "back",
+                  "grid",
+                  "star",
+                  "alert",
+                  "info",
+                  "home",
+                  "search"
+                ]
+              }
+            }
           }
         }
       },
@@ -114,7 +115,7 @@
                   "legend": "{{value}}",
                   "items": [
                     {
-                      "key": "tabicons[]",
+                      "key": "tabs[].icon",
                       "type": "imageselect",
                       "imageWidth": 36,
                       "imageHeight": 36,
@@ -124,7 +125,7 @@
                       "imageSelectorTitle": "Based on tab data source"
                     },
                     {
-                      "key": "tabs[]",
+                      "key": "tabs[].name",
                       "valueInLegend": true,
                       "value": "Tab {{idx}}"
                     },
