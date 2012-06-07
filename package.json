@@ -1,12 +1,198 @@
 {
-  "name": "jquery-mobile-template",
-  "fullName": "jQuery Mobile Template",
-  "version": "0.0.1",
-  "description": "Template based on jQuery Mobile (compatible with all mobile platforms).",
+  "name": "smoothie",
+  "fullName": "Smoothie",
+  "version": "0.9.0",
+  "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
+  "keywords": [
+    "generic",
+    "polished",
+    "mobile"
+  ],
   "joshfire": {
     "images": {
       "small": "http://i.imgur.com/sm0MA.png",
       "big": "http://i.imgur.com/x5NbC.png"
-    }
+    },
+    "datasources": {
+      "main": {
+        "title": "Main tabs",
+        "description": "Any type of datasources accepted.",
+        "multiple": true
+      }
+    },
+    "devices": [
+      {
+        "devices": "phone",
+        "startfile": "app/index.phone.optimized.html",
+        "images": "marketing/phone.jpg",
+        "screenshots": [
+          "marketing/phone-screenshot1.jpg",
+          "marketing/phone-screenshot2.jpg",
+          "marketing/phone-screenshot3.jpg"
+        ]
+      }
+    ],
+    "options": {
+      "schema": {
+        "theme": {
+          "title": "Theme",
+          "type": "string",
+          "enum": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e"
+           ],
+          "default": "c",
+          "required": true
+        },
+        "tabs": {
+          "title": "Tabs titles",
+          "type": "array",
+          "items": {
+            "title": "Short tab title (max. 10 characters)",
+            "type": "string",
+            "maxLength": 10
+          }
+        },
+        "tabicons": {
+          "title": "Tabs icons",
+          "type": "array",
+          "items": {
+            "title": "Tab icon",
+            "type": "string",
+            "enum": [
+              "arrow-l",
+              "arrow-r",
+              "arrow-u",
+              "arrow-d",
+              "delete",
+              "plus",
+              "minus",
+              "check",
+              "gear",
+              "refresh",
+              "forward",
+              "back",
+              "grid",
+              "star",
+              "alert",
+              "info",
+              "home",
+              "search"
+            ]
+          }
+        }
+      },
+      "form": [
+        {
+          "type": "fieldset",
+          "legend": "Style",
+          "items": [
+            {
+              "key": "theme",
+              "titleMap": {
+                "a": "Black",
+                "b": "Blue",
+                "c": "Grey",
+                "d": "White",
+                "e": "Yellow"
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldset",
+          "legend": "Tabs",
+          "items": [
+            {
+              "type": "tabarray",
+              "items": [
+                {
+                  "type": "section",
+                  "legend": "{{value}}",
+                  "items": [
+                    {
+                      "key": "tabicons[]",
+                      "type": "imageselect",
+                      "imageWidth": 36,
+                      "imageHeight": 36,
+                      "imageButtonClass": "btn-inverse",
+                      "imagePrefix": "configuration/icon-",
+                      "imageSuffix": ".png",
+                      "imageSelectorTitle": "Based on tab data source"
+                    },
+                    {
+                      "key": "tabs[]",
+                      "valueInLegend": true,
+                      "value": "Tab {{idx}}"
+                    },
+                    {
+                      "title": "Tab data source",
+                      "description": "Any type of datasources accepted.",
+                      "key": "datasources.main[]"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "libraries": [
+      {
+        "name": "jQuery Mobile",
+        "homepage": "http://jquerymobile.com",
+        "description": "Touch-Optimized Web Framework for Smartphones & Tablets",
+        "repositories": [
+          {
+            "type": "git",
+            "url": "https://github.com/jquery/jquery-mobile.git"
+          }
+        ],
+        "licenses": [
+          {
+            "type": "MIT",
+            "url": "https://raw.github.com/jquery/jquery-mobile/master/MIT-LICENSE.txt"
+          }
+        ]
+      },
+      {
+        "name": "Klass",
+        "homepage": "https://github.com/ded/klass",
+        "description": "An expressive, cross platform JavaScript Class provider with a classical interface to prototypal inheritance.",
+        "repositories": [
+          {
+            "type": "git",
+            "url": "https://github.com/ded/klass.git"
+          }
+        ],
+        "licenses": [
+          {
+            "type": "MIT",
+            "url": "license-klass.txt"
+          }
+        ]
+      },
+      {
+        "name": "Photoswipe",
+        "homepage": "http://www.photoswipe.com/",
+        "description": "Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based image gallery specifically targeting mobile devices.",
+        "repositories": [
+          {
+            "type": "git",
+            "url": "https://github.com/codecomputerlove/PhotoSwipe.git"
+          }
+        ],
+        "licenses": [
+          {
+            "type": "MIT",
+            "url": "license-photoswipe.txt"
+          }
+        ]
+      }
+    ]
   }
 }
