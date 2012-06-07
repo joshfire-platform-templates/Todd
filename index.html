@@ -126,7 +126,7 @@
           if ( err ) { console.error( err ); return; }
 
           var outputType = Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].config.outputType;
-          var staticDS = Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].name == "Static";
+          var staticDS = Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].config.db == "static";
 
           if ( staticDS ) {
             var item = data.entries[0];
