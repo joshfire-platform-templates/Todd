@@ -120,7 +120,7 @@
                       "imageWidth": 36,
                       "imageHeight": 36,
                       "imageButtonClass": "btn-inverse",
-                      "imagePrefix": "configuration/icon-",
+                      "imagePrefix": "configuration/",
                       "imageSuffix": ".png",
                       "imageSelectorTitle": "Based on tab data source"
                     },
