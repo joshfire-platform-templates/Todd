@@ -23,7 +23,7 @@
     "devices": [
       {
         "devices": "phone",
-        "startfile": "app/index.phone.optimized.html",
+        "startfile": "index.html",
         "images": "marketing/phone.jpg",
         "screenshots": [
           "marketing/phone-screenshot1.jpg",
