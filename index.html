@@ -7,6 +7,7 @@
     <link rel="stylesheet"  href="css/jquery.mobile-1.1.0.css">
     <script data-joshfire-bootstrap src="http://127.0.0.1:40021/bootstrap/4fccb70983ea709211000022/4fb647273428930100003768/auto/"></script>
     <script src="js/jquery.js"></script>
+    <script src="js/jsrender.js"></script>
     <script src="js/jquery.mobile-1.1.0.js"></script>
     <script>
       // TODO check Joshfire.factory.config.datasources.main > 0
@@ -14,6 +15,30 @@
       var dataSources = Joshfire.factory.getDataSource( "main" ).children,
           app = Joshfire.factory.config.app,
           firstTime = true;
+
+      function extractTime( date ) {
+        var currentDate = new Date( date );
+        var hours = currentDate.getHours()
+        var minutes = currentDate.getMinutes()
+
+        if (minutes < 10) {
+          minutes = "0" + minutes;
+        }
+
+        if ( hours > 11 ) {
+          return hours + ":" + minutes + "PM";
+        } else {
+          return hours + ":" + minutes + "AM";
+        }
+      }
+
+      function extractDay( date ) {
+        var currentDate = new Date( date );
+        var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+        var dayNames = [ "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday", "Sunday" ];
+
+        return dayNames[currentDate.getDay()] + "," + dayNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
+      }
 
       function createPage( dataSourceId, data, urlObj, articleId ) {
 
@@ -95,13 +120,41 @@
         $.mobile.showPageLoadingMsg();
 
         // Get the items from our dataSource
-        Joshfire.factory.getDataSource( "main" ).children[dataSourceId].find( {}, function ( err, data ) {
+        Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].find( {}, function ( err, data ) {
           if ( err ) { console.error( err ); return; }
 
+          var outputType = Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].config.outputType;
+
           if ( articleId === undefined ) {
+
+            var previousDate = null;
+
             // Generate a list item for each item in the category and add it to our markup.
             for ( var i = 0; i < data.entries.length; i++ ) {
-              contentMarkup += "<li><a href='#datasource=" + dataSourceId + "&article=" + i + "' data-icon='grid'>" + data.entries[i].name + "</a></li>";
+
+              // Our item need to be extended to transmit useful information to the template
+              data.entries[i].i = i;
+              data.entries[i].dataSourceId = dataSourceId;
+
+              var extractedDay = extractDay( data.entries[i].datePublished );
+
+              if ( data.entries[i].datePublished ) {
+                if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
+                  contentMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
+                  previousDate = extractedDay;
+                }
+                data.entries[i].datePublished = extractTime(data.entries[i].datePublished);
+              }
+
+              if ( outputType == "BlogPosting" ) {
+                contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[i] );
+              } else if ( outputType == "ImageObject" || outputType == "VideoObject" ) {
+                contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[i] );
+              } else if ( outputType == "Article/Status" ) {
+                contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[i] );
+              } else {
+                contentMarkup +=  $( "#genericListTemplate" ).render( data.entries[i] );
+              }
             }
             contentMarkup += "</ul>";
 
@@ -113,13 +166,19 @@
           } else {
             var item = data.entries[articleId];
 
-            // Generate markup for the item
-            if (item) {
-              contentMarkup += "<h1>" + item.name + "</h1><p>" + item.description + "</p>";
+            if ( item.itemType == "BlogPosting" ) {
+              contentMarkup +=  $( "#blogPostingTemplate" ).render( item );
+            } else if ( item.itemType == "ImageObject" ) {
+              contentMarkup +=  $( "#imageObjectTemplate" ).render( item );
+            } else if ( item.itemType == "VideoObject" ) {
+              contentMarkup +=  $( "#videoObjectTemplate" ).render( item );
+            } else {
+              contentMarkup +=  $( "#genericTemplate" ).render( item );
             }
 
-            // Inject the category items markup into the content element.
-            $content.html( contentMarkup );
+            // Inject the category items markup into the content element
+            // and trigger a create event to enhance the fresh markup.
+            $content.html( contentMarkup ).trigger( 'create' );
           }
 
           $.mobile.hidePageLoadingMsg();
@@ -169,20 +228,77 @@
   <body>
 
     <div data-role="page" id="list-page">
-      <div data-role="header" data-position="fixed" data-id="header">
+      <div data-role="header" data-position="fixed" data-id="header" data-tap-toggle="false">
         <h1>App Name</h1>
       </div>
       <div data-role="content" id="list"></div>
-      <div data-role="footer" data-position="fixed" data-id="footer"></div>
+      <div data-role="footer" data-position="fixed" data-id="footer" data-tap-toggle="false"></div>
     </div>
 
     <div data-role="page" id="content-page" data-add-back-btn="true">
-      <div data-role="header" data-position="fixed" data-id="header">
+      <div data-role="header" data-position="fixed" data-id="header" data-tap-toggle="false">
         <h1>App Name</h1>
       </div>
       <div data-role="content" id="content"></div>
-      <div data-role="footer" data-position="fixed" data-id="footer"></div>
+      <div data-role="footer" data-position="fixed" data-id="footer" data-tap-toggle="false"></div>
     </div>
 
+    <script id="blogPostingListTemplate" type="text/x-jsrender">
+      <li>
+        <a href="#datasource={{:dataSourceId}}&article={{:i}}" data-icon="grid">
+          <h3>{{:name}}</h3>
+          <p>{{:description}}</p>
+          <p class="ui-li-aside"><strong>{{:datePublished}}</strong></p>
+        </a>
+      </li>
+    </script>
+
+    <script id="mediaObjectListTemplate" type="text/x-jsrender">
+      <li>
+        <a href="#datasource={{:dataSourceId}}&article={{:i}}" data-icon="grid">
+          <img src="{{:thumbnail[0].contentURL}}">
+          <h3>{{:name}}</h3>
+        </a>
+      </li>
+    </script>
+
+    <script id="statusListTemplate" type="text/x-jsrender">
+      <li>
+        <h3><em>{{:author[0].name}}</em> said:</h3>
+        <p style="white-space: normal;">{{:name}}</p>
+        <p class="ui-li-aside"><strong>{{:datePublished}}</strong></p>
+      </li>
+    </script>
+
+    <script id="genericListTemplate" type="text/x-jsrender">
+      <li>
+        <a href="#datasource={{:dataSourceId}}&article={{:i}}" data-icon="grid">
+          {{:name}}
+        </a>
+      </li>
+    </script>
+
+    <script id="blogPostingTemplate" type="text/x-jsrender">
+      <h1>{{:name}}</h1>
+      <p>{{:description}}</p>
+      <a href="{{:url}}" target="_blank" data-mini="true" data-role="button">Open original article</a>
+    </script>
+
+    <script id="imageObjectTemplate" type="text/x-jsrender">
+      <img src="{{:contentURL}}" style="max-width:100%">
+      <p>{{:name}}, by <em>{{:author[0].name}}</em></p>
+    </script>
+
+    <script id="videoObjectTemplate" type="text/x-jsrender">
+      <h1>{{:name}}</h1>
+      <video src="{{:embedURL}}" style="max-width:100%"></video>
+      <p>{{:description}}</p>
+      <p>Posted by <em>{{:author[0].name}}</em></p>
+    </script>
+
+    <script id="genericTemplate" type="text/x-jsrender">
+      <h1>{{:name}}</h1>
+      <p>{{:description}}</p>
+    </script>
   </body>
 </html>
