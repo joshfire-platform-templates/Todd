@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no">
     <title>My App</title>
-    <link rel="stylesheet"  href="css/jquery.mobile-1.1.0.css">
+    <link rel="stylesheet" href="css/jquery.mobile-1.1.0.css">
     <script data-joshfire-bootstrap></script>
     <script src="js/jquery.js"></script>
     <script src="js/jsrender.js"></script>
@@ -15,7 +15,9 @@
 
       var dataSources = Joshfire.factory.getDataSource( "main" ).children,
           app = Joshfire.factory.config.app,
-          firstTime = true;
+          firstLaunch = true;
+
+      document.title = app.name;
 
       function extractTime( date ) {
         var currentDate = new Date( date );
@@ -73,9 +75,14 @@
         // Empty the content area
         $content.html( "" );
 
+        var tabs = Joshfire.factory.config.template.options.tabs;
+
         // Generate a navbar item for each datasources and add it to our markup.
-        for ( var i = 0; i < dataSources.length; i++ ) {
-          footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='grid'>" + dataSources[i].name + "</a></li>";
+        for ( var i = 0; i < tabs.length; i++ ) {
+          var name = ( tabs[i] && tabs[i].name ) || dataSources[i].name;
+          var icon = ( tabs[i] && tabs[i].icon ) || "grid"; // TODO: depends of data source type instead
+
+          footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='" + icon + "'>" + name + "</a></li>";
         }
         footerMarkup += "</ul></div>";
 
@@ -207,6 +214,12 @@
       $(document).bind( "pagebeforechange", function( e, data ) {
         console.log( "pagebeforechange" );
 
+        // Change theme of our application
+        // TODO: don't do it each page changing...
+        if ( Joshfire.factory.config.template.options.theme ) {
+          $( "[data-role=page]" ).attr( { "data-theme": Joshfire.factory.config.template.options.theme } );
+        }
+
         // string = app is asking us to load a page by URL
         if ( typeof data.toPage === "string" ) {
           console.log( "Loading ", data.toPage );
@@ -229,9 +242,9 @@
           }
 
           e.preventDefault();
-        } else if (firstTime) { // first load (loading first page and ???)
+        } else if (firstLaunch) { // first load (loading first page and ???)
           console.log( "Loading first page" );
-          firstTime = false;
+          firstLaunch = false;
 
           // Let's assume we're launching the application for the first time
           // Building the list page for the first datasource
