@@ -75,8 +75,8 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
   // Generate a navbar item for each datasources and add it to our markup.
   for ( var i = 0; i < tabs.length; i++ ) {
-    var name = ( tabs[i] && tabs[i].name ) || dataSources[i].name;
-    var icon = ( tabs[i] && tabs[i].icon ) || "grid"; // TODO: depends of data source type instead
+    var name = ( tabs[ i ] && tabs[ i ].name ) || dataSources[ i ].name;
+    var icon = ( tabs[ i ] && tabs[ i ].icon ) || "grid"; // TODO: depends of data source type instead
 
     footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='" + icon + "'>" + name + "</a></li>";
   }
@@ -146,27 +146,27 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
       for ( var i = 0; i < data.entries.length; i++ ) {
 
         // Our item need to be extended to transmit useful information to the template
-        data.entries[i].i = i;
-        data.entries[i].dataSourceId = dataSourceId;
+        data.entries[ i ].i = i;
+        data.entries[ i ].dataSourceId = dataSourceId;
 
-        var extractedDay = extractDay( data.entries[i].datePublished );
+        var extractedDay = extractDay( data.entries[ i ].datePublished );
 
-        if ( data.entries[i].datePublished ) {
+        if ( data.entries[ i ].datePublished ) {
           if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
             contentMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
             previousDate = extractedDay;
           }
-          data.entries[i].datePublished = extractTime(data.entries[i].datePublished);
+          data.entries[ i ].datePublished = extractTime(data.entries[ i ].datePublished);
         }
 
         if ( outputType == "BlogPosting" ) {
-          contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[i] );
+          contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
         } else if ( outputType == "ImageObject" || outputType == "VideoObject" ) {
-          contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[i] );
+          contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
         } else if ( outputType == "Article/Status" ) {
-          contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[i] );
+          contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
         } else {
-          contentMarkup +=  $( "#genericListTemplate" ).render( data.entries[i] );
+          contentMarkup +=  $( "#genericListTemplate" ).render( data.entries[ i ] );
         }
       }
       contentMarkup += "</ul>";

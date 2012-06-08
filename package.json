@@ -161,36 +161,19 @@
         ]
       },
       {
-        "name": "Klass",
-        "homepage": "https://github.com/ded/klass",
-        "description": "An expressive, cross platform JavaScript Class provider with a classical interface to prototypal inheritance.",
+        "name": "JsRender",
+        "homepage": "https://github.com/BorisMoore/jsrender",
+        "description": "Next-generation jQuery Templates",
         "repositories": [
           {
             "type": "git",
-            "url": "https://github.com/ded/klass.git"
+            "url": "https://github.com/BorisMoore/jsrender.git"
           }
         ],
         "licenses": [
           {
             "type": "MIT",
-            "url": "license-klass.txt"
-          }
-        ]
-      },
-      {
-        "name": "Photoswipe",
-        "homepage": "http://www.photoswipe.com/",
-        "description": "Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based image gallery specifically targeting mobile devices.",
-        "repositories": [
-          {
-            "type": "git",
-            "url": "https://github.com/codecomputerlove/PhotoSwipe.git"
-          }
-        ],
-        "licenses": [
-          {
-            "type": "MIT",
-            "url": "license-photoswipe.txt"
+            "url": "https://raw.github.com/BorisMoore/jsrender/master/MIT-LICENSE.txt"
           }
         ]
       }
