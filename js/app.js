@@ -1,6 +1,8 @@
 // TODO check if Joshfire.factory.config.datasources.main > 0
-var dataSources = Joshfire.factory.getDataSource( "main" ).children,
-    app = Joshfire.factory.config.app,
+var factory = Joshfire.factory,
+    app = factory.config.app,
+    dataSources = factory.getDataSource( "main" ).children,
+    template = factory.config.template,
     firstLaunch = true;
 
 if (app.logo) {
@@ -69,7 +71,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
   // Empty the content area
   $content.html( "" );
 
-  var tabs = Joshfire.factory.config.template.options.tabs;
+  var tabs = template.options.tabs;
 
   // Generate a navbar item for each datasources and add it to our markup.
   for ( var i = 0; i < tabs.length; i++ ) {
@@ -123,11 +125,11 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
   $.mobile.showPageLoadingMsg();
 
   // Get the items from our dataSource
-  Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].find( {}, function ( err, data ) {
+  dataSources[ dataSourceId ].find( {}, function ( err, data ) {
     if ( err ) { console.error( err ); return; }
 
-    var outputType = Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].config.outputType;
-    var staticDS = Joshfire.factory.getDataSource( "main" ).children[ dataSourceId ].config.db == "static";
+    var outputType = dataSources[ dataSourceId ].config.outputType;
+    var staticDS = dataSources[ dataSourceId ].config.db == "static";
 
     if ( staticDS ) {
       var staticItem = data.entries[0];
@@ -209,8 +211,8 @@ $(document).bind( "pagebeforechange", function( e, data ) {
 
   // Change theme of our application
   // TODO: don't do it each page changing...
-  if ( Joshfire.factory.config.template.options.theme ) {
-    $( "[data-role=page]" ).attr( { "data-theme": Joshfire.factory.config.template.options.theme } );
+  if ( template.options.theme ) {
+    $( "[data-role=page]" ).attr( { "data-theme": template.options.theme } );
   }
 
   // string = app is asking us to load a page by URL
