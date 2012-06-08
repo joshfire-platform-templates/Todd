@@ -1,7 +1,7 @@
 {
   "name": "smoothie",
   "fullName": "Smoothie",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
   "keywords": [
     "generic",
@@ -157,6 +157,23 @@
           {
             "type": "MIT",
             "url": "https://raw.github.com/jquery/jquery-mobile/master/MIT-LICENSE.txt"
+          }
+        ]
+      },
+      {
+        "name": "JsRender",
+        "homepage": "https://github.com/BorisMoore/jsrender",
+        "description": "Next-generation jQuery Templates",
+        "repositories": [
+          {
+            "type": "git",
+            "url": "https://github.com/BorisMoore/jsrender.git"
+          }
+        ],
+        "licenses": [
+          {
+            "type": "MIT",
+            "url": "https://raw.github.com/BorisMoore/jsrender/master/MIT-LICENSE.txt"
           }
         ]
       },
