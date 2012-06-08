@@ -64,8 +64,8 @@
                 "enum": [
                   "arrow-l",
                   "arrow-r",
-                  "arrow-u",
-                  "arrow-d",
+                  "arrow-t",
+                  "arrow-b",
                   "delete",
                   "plus",
                   "minus",
