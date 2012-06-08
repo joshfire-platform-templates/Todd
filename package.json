@@ -1,7 +1,7 @@
 {
   "name": "smoothie",
   "fullName": "Smoothie",
-  "version": "0.9.7",
+  "version": "1.0.0",
   "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
   "keywords": [
     "generic",
@@ -10,8 +10,8 @@
   ],
   "joshfire": {
     "images": {
-      "small": "http://i.imgur.com/sm0MA.png",
-      "big": "http://i.imgur.com/x5NbC.png"
+      "small": "marketing/smoothie(380-236).png",
+      "big": "marketing/smoothie(700-335).png"
     },
     "datasources": {
       "main": {
@@ -24,12 +24,7 @@
       {
         "devices": "phone",
         "startfile": "index.html",
-        "images": "marketing/phone.jpg",
-        "screenshots": [
-          "marketing/phone-screenshot1.jpg",
-          "marketing/phone-screenshot2.jpg",
-          "marketing/phone-screenshot3.jpg"
-        ]
+        "images": "smoothie(380-236)2.png"
       }
     ],
     "options": {
