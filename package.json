@@ -117,7 +117,7 @@
                       "imageButtonClass": "btn-inverse",
                       "imagePrefix": "configuration/",
                       "imageSuffix": ".png",
-                      "imageSelectorTitle": "Based on tab data source"
+                      "imageSelectorTitle": "Select icon"
                     },
                     {
                       "key": "tabs[].name",
