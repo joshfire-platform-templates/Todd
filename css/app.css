@@ -1,3 +1,133 @@
 #video-player iframe {
   max-width: 100% !important;
 }
+
+.ui-icon-play,
+.ui-icon-doublequaver,
+.ui-icon-quaver,
+.ui-icon-video,
+.ui-icon-newspaper,
+.ui-icon-calendar,
+.ui-icon-picture,
+.ui-icon-twitter,
+.ui-icon-pin,
+.ui-icon-dots,
+.ui-icon-mail,
+.ui-icon-rss,
+.ui-icon-bubble,
+.ui-icon-facebook,
+.ui-icon-tag,
+.ui-icon-pencil,
+.ui-icon-wrench,
+.ui-icon-cart {
+  background-image: url(images/icons-extras-18-white.png);
+}
+
+.ui-icon-play {
+  background-position: -0 50%;
+}
+
+.ui-icon-doublequaver {
+  /* Changed -36 to -37... */
+  background-position: -37px 50%;
+}
+
+.ui-icon-quaver {
+  background-position: -72px 50%;
+}
+
+.ui-icon-video {
+  background-position: -108px 50%;
+}
+
+.ui-icon-newspaper {
+  background-position: -144px 50%;
+}
+
+.ui-icon-calendar {
+  background-position: -180px 50%;
+}
+
+.ui-icon-picture {
+  background-position: -216px 50%;
+}
+
+.ui-icon-twitter {
+  background-position: -252px 50%;
+}
+
+.ui-icon-pin {
+  /* Changed -288 to -287... */
+  background-position: -287px 50%;
+}
+
+.ui-icon-dots {
+  /* Changed -324 to -323... */
+  background-position: -323px 50%;
+}
+
+.ui-icon-mail {
+  /* Changed -360 to -359... */
+  background-position: -359px 50%;
+}
+
+.ui-icon-rss {
+  /* Changed -396 to -395... */
+  background-position: -395px 50%;
+}
+
+.ui-icon-bubble {
+  /* Changed -432 to -431... */
+  background-position: -431px 50%;
+}
+
+.ui-icon-facebook {
+  background-position: -468px 50%;
+}
+
+.ui-icon-tag {
+  background-position: -504px 50%;
+}
+
+.ui-icon-pencil {
+  background-position: -540px 50%;
+}
+
+.ui-icon-wrench {
+  background-position: -576px 50%;
+}
+
+.ui-icon-cart {
+  /* Changed -612 to -610... */
+  background-position: -610px 50%;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+       only screen and (min--moz-device-pixel-ratio: 1.5),
+       only screen and (min-resolution: 240dpi) {
+        .ui-icon-play,
+  .ui-icon-doublequaver,
+  .ui-icon-quaver,
+  .ui-icon-video,
+  .ui-icon-newspaper,
+  .ui-icon-calendar,
+  .ui-icon-picture,
+  .ui-icon-twitter,
+  .ui-icon-pin,
+  .ui-icon-dots,
+  .ui-icon-mail,
+  .ui-icon-rss,
+  .ui-icon-bubble,
+  .ui-icon-facebook,
+  .ui-icon-tag,
+  .ui-icon-pencil,
+  .ui-icon-wrench,
+  .ui-icon-cart {
+    background-image: url(images/icons-extras-36-white.png);
+    background-size: 18px 18px;
+  }
+
+  .ui-icon-alt {
+    background-image: url(images/icons-extras-36-black.png);
+  }
+}
