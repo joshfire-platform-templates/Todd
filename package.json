@@ -74,7 +74,24 @@
                   "alert",
                   "info",
                   "home",
-                  "search"
+                  "search",
+                  "play",
+                  "doublequaver",
+                  "quaver",
+                  "video",
+                  "newspaper",
+                  "calendar",
+                  "picture",
+                  "twitter",
+                  "pin",
+                  "dots",
+                  "mail",
+                  "rss",
+                  "bubble",
+                  "facebook",
+                  "tag",
+                  "pencil",
+                  "cart"
                 ]
               }
             }
