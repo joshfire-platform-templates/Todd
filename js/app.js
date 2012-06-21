@@ -1,7 +1,7 @@
 // TODO check if Joshfire.factory.config.datasources.main > 0
 var factory = Joshfire.factory,
     app = factory.config.app,
-    dataSources = factory.getDataSource( "main" ).children,
+    dataSources = (factory.getDataSource( "main" ) ? factory.getDataSource( "main" ).children : null),
     template = factory.config.template,
     firstLaunch = true;
 
@@ -73,14 +73,16 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
   var tabs = template.options.tabs;
 
-  // Generate a navbar item for each datasources and add it to our markup.
-  for ( var i = 0; i < tabs.length; i++ ) {
-    var name = ( tabs[ i ] && tabs[ i ].name ) || dataSources[ i ].name;
-    var icon = ( tabs[ i ] && tabs[ i ].icon ) || "grid"; // TODO: depends of data source type instead
+  if (tabs) {
+    // Generate a navbar item for each datasources and add it to our markup.
+    for ( var i = 0; i < tabs.length; i++ ) {
+      var name = ( tabs[ i ] && tabs[ i ].name ) || dataSources[ i ].name;
+      var icon = ( tabs[ i ] && tabs[ i ].icon ) || "grid"; // TODO: depends of data source type instead
 
-    footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='" + icon + "'>" + name + "</a></li>";
+      footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='" + icon + "'>" + name + "</a></li>";
+    }
+    footerMarkup += "</ul></div>";
   }
-  footerMarkup += "</ul></div>";
 
   // Find the h1 element in our header and inject the name of the app into it.
   $header.find( "h1" ).html( app.name );
@@ -124,86 +126,91 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
   // Everything is done but loading the content. Display the spinner.
   $.mobile.showPageLoadingMsg();
 
-  // Get the items from our dataSource
-  dataSources[ dataSourceId ].find( {}, function ( err, data ) {
-    if ( err ) { console.error( err ); return; }
+  if (dataSources) {
+    // Get the items from our dataSource
+    dataSources[ dataSourceId ].find( {}, function ( err, data ) {
+      if ( err ) { console.error( err ); return; }
 
-    var outputType = dataSources[ dataSourceId ].config.outputType;
-    var staticDS = dataSources[ dataSourceId ].config.db == "static";
+      var outputType = dataSources[ dataSourceId ].config.outputType;
+      var staticDS = dataSources[ dataSourceId ].config.db == "static";
 
-    if ( staticDS ) {
-      var staticItem = data.entries[0];
+      if ( staticDS ) {
+        var staticItem = data.entries[0];
 
-      // NOTE: we're erasing the value of this variable.
-      contentMarkup = $( "#staticTemplate" ).render( staticItem );
+        // NOTE: we're erasing the value of this variable.
+        contentMarkup = $( "#staticTemplate" ).render( staticItem );
 
-      $content.html( contentMarkup );
-    } else if ( articleId === undefined ) {
+        $content.html( contentMarkup );
+      } else if ( articleId === undefined ) {
 
-      var previousDate = null;
+        var previousDate = null;
 
-      // Generate a list item for each item in the category and add it to our markup.
-      for ( var i = 0; i < data.entries.length; i++ ) {
+        // Generate a list item for each item in the category and add it to our markup.
+        for ( var i = 0; i < data.entries.length; i++ ) {
 
-        // Our item need to be extended to transmit useful information to the template
-        data.entries[ i ].i = i;
-        data.entries[ i ].dataSourceId = dataSourceId;
+          // Our item need to be extended to transmit useful information to the template
+          data.entries[ i ].i = i;
+          data.entries[ i ].dataSourceId = dataSourceId;
 
-        var extractedDay = extractDay( data.entries[ i ].datePublished );
+          var extractedDay = extractDay( data.entries[ i ].datePublished );
 
-        if ( data.entries[ i ].datePublished ) {
-          if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
-            contentMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
-            previousDate = extractedDay;
+          if ( data.entries[ i ].datePublished ) {
+            if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
+              contentMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
+              previousDate = extractedDay;
+            }
+            data.entries[ i ].datePublished = extractTime(data.entries[ i ].datePublished);
           }
-          data.entries[ i ].datePublished = extractTime(data.entries[ i ].datePublished);
+
+          if ( outputType == "BlogPosting" ) {
+            contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
+          } else if ( outputType == "ImageObject" || outputType == "VideoObject" ) {
+            contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
+          } else if ( outputType == "Article/Status" ) {
+            contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
+          } else {
+            contentMarkup +=  $( "#genericListTemplate" ).render( data.entries[ i ] );
+          }
         }
+        contentMarkup += "</ul>";
 
-        if ( outputType == "BlogPosting" ) {
-          contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
-        } else if ( outputType == "ImageObject" || outputType == "VideoObject" ) {
-          contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
-        } else if ( outputType == "Article/Status" ) {
-          contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
-        } else {
-          contentMarkup +=  $( "#genericListTemplate" ).render( data.entries[ i ] );
-        }
-      }
-      contentMarkup += "</ul>";
+        // Inject the category items markup into the content element.
+        $content.html( contentMarkup );
 
-      // Inject the category items markup into the content element.
-      $content.html( contentMarkup );
-
-      // Enhance the listview we just injected.
-      $content.find( ":jqmData(role=listview)" ).listview();
-    } else {
-      var item = data.entries[articleId];
-
-      if ( item.itemType == "BlogPosting" ) {
-        contentMarkup += $( "#blogPostingTemplate" ).render( item );
-      } else if ( item.itemType == "ImageObject" ) {
-        contentMarkup += $( "#imageObjectTemplate" ).render( item );
-      } else if ( item.itemType == "VideoObject" ) {
-        contentMarkup += $( "#videoObjectTemplate" ).render( item );
+        // Enhance the listview we just injected.
+        $content.find( ":jqmData(role=listview)" ).listview();
       } else {
-        contentMarkup += $( "#genericTemplate" ).render( item );
+        var item = data.entries[articleId];
+
+        if ( item.itemType == "BlogPosting" ) {
+          contentMarkup += $( "#blogPostingTemplate" ).render( item );
+        } else if ( item.itemType == "ImageObject" ) {
+          contentMarkup += $( "#imageObjectTemplate" ).render( item );
+        } else if ( item.itemType == "VideoObject" ) {
+          contentMarkup += $( "#videoObjectTemplate" ).render( item );
+        } else {
+          contentMarkup += $( "#genericTemplate" ).render( item );
+        }
+
+        // Inject the category items markup into the content element
+        // and trigger a create event to enhance the fresh markup.
+        $content.html( contentMarkup ).trigger( 'create' );
+
+        // mediaFactory needs the markup to inserted into the DOM before adding its
+        // own code.
+        if ( item.itemType == "VideoObject" ) {
+          mediaFactory.insert(item, { strategy: "html5" }, 'video-player', function(err) {
+            if (err) console.error(err);
+          });
+        }
       }
 
-      // Inject the category items markup into the content element
-      // and trigger a create event to enhance the fresh markup.
-      $content.html( contentMarkup ).trigger( 'create' );
-
-      // mediaFactory needs the markup to inserted into the DOM before adding its
-      // own code.
-      if ( item.itemType == "VideoObject" ) {
-        mediaFactory.insert(item, { strategy: "html5" }, 'video-player', function(err) {
-          if (err) console.error(err);
-        });
-      }
-    }
-
+      $.mobile.hidePageLoadingMsg();
+    });
+  } else {
+    $content.html( "<p style=\"text-align: center\">No datasources selected.</p>" );
     $.mobile.hidePageLoadingMsg();
-  });
+  }
 }
 
 // Listen for any attempts to call changePage()
