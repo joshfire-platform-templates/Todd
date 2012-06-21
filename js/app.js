@@ -5,10 +5,10 @@ var factory = Joshfire.factory,
     template = factory.config.template,
     firstLaunch = true;
 
-if (app.logo) {
+if (app.icon) {
   var link = document.createElement("link");
   link.rel = "apple-touch-icon";
-  link.href = app.logo.contentURL;
+  link.href = app.icon.contentURL;
   document.head.appendChild(link);
 }
 
