@@ -221,6 +221,9 @@ $(document).bind( "pagebeforechange", function( e, data ) {
   if ( template.options.theme ) {
     $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": template.options.theme } );
   }
+  if ( template.options.contentTheme ) {
+    $( "[data-role=content]" ).attr( { "data-theme": template.options.contentTheme } );
+  }
 
   // string = app is asking us to load a page by URL
   if ( typeof data.toPage === "string" ) {

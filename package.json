@@ -30,7 +30,7 @@
     "options": {
       "schema": {
         "theme": {
-          "title": "Theme",
+          "title": "Toolbars theme",
           "type": "string",
           "enum": [
             "a",
@@ -40,6 +40,19 @@
             "e"
            ],
           "default": "a",
+          "required": true
+        },
+        "contentTheme": {
+          "title": "Content theme",
+          "type": "string",
+          "enum": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e"
+           ],
+          "default": "c",
           "required": true
         },
         "tabs": {
@@ -106,6 +119,16 @@
           "items": [
             {
               "key": "theme",
+              "titleMap": {
+                "a": "Black",
+                "b": "Blue",
+                "c": "Grey",
+                "d": "White",
+                "e": "Yellow"
+              }
+            },
+            {
+              "key": "contentTheme",
               "titleMap": {
                 "a": "Black",
                 "b": "Blue",
