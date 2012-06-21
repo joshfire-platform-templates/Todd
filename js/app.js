@@ -212,7 +212,7 @@ $(document).bind( "pagebeforechange", function( e, data ) {
   // Change theme of our application
   // TODO: don't do it each page changing...
   if ( template.options.theme ) {
-    $( "[data-role=page]" ).attr( { "data-theme": template.options.theme } );
+    $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": template.options.theme } );
   }
 
   // string = app is asking us to load a page by URL
