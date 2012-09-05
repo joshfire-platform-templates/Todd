@@ -58,6 +58,7 @@
         "tabs": {
           "title": "Tabs titles",
           "type": "array",
+          "maxLength": 4,
           "items": {
             "type": "object",
             "properties": {
