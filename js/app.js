@@ -14,7 +14,7 @@ if (app.icon) {
 
 // Prevent letterbox when adding this app to iPhone 5 home screen
 // See http://www.mobilexweb.com/blog/iphone-5-ios-6-html5-developers
-if (window.screen.height==568) { // iPhone 4"
+if (window.screen.height === 568) { // iPhone 4"
   document.querySelector("meta[name=viewport]").content = "width=320.1";
 }
 
@@ -48,13 +48,12 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
   $( "#video-player" ).html( "" );
 
-  var $page,
-      contentMarkup = "";
+  var $page;
+  var contentMarkup = "";
 
   // The markup we are going to inject into the content area of the page.
   if ( articleId === undefined ) {
     $page = $( "#list-page" );
-    contentMarkup = "<ul data-role='listview'>";
   } else {
     $page = $( "#content-page" );
   }
@@ -143,6 +142,8 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
       if ( articleId === undefined && !singleEntry) {
 
         var previousDate = null;
+
+        contentMarkup = "<ul data-role='listview'>";
 
         // Generate a list item for each item in the category and add it to our markup.
         for ( var i = 0; i < data.entries.length; i++ ) {
