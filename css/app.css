@@ -13,6 +13,38 @@ p > img {
   width: 80px;
 }
 
+.gallery {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gallery:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+
+.gallery li {
+  float: left;
+  width: 33.33333333%;
+}
+
+.gallery li a {
+  display: block;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.gallery li img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/*#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }*/
+
 .ui-icon-play,
 .ui-icon-doublequaver,
 .ui-icon-quaver,

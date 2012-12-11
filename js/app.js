@@ -3,7 +3,8 @@ var factory = Joshfire.factory,
     app = factory.config.app,
     dataSources = (factory.getDataSource( "main" ) ? factory.getDataSource( "main" ).children : null),
     template = factory.config.template,
-    firstLaunch = true;
+    firstLaunch = true,
+    photoSwipeInstance;
 
 if (app.icon) {
   var link = document.createElement("link");
@@ -143,7 +144,12 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         var previousDate = null;
 
-        contentMarkup = "<ul data-role='listview'>";
+        if ( outputType == "ImageObject" ) {
+          // For PhotoSwipe
+          contentMarkup = "<ul class='gallery'>";
+        } else {
+          contentMarkup = "<ul data-role='listview'>";
+        }
 
         // Generate a list item for each item in the category and add it to our markup.
         for ( var i = 0; i < data.entries.length; i++ ) {
@@ -164,8 +170,10 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
           if ( outputType == "BlogPosting" ) {
             contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
-          } else if ( outputType == "ImageObject" || outputType == "VideoObject" ) {
+          } else if ( outputType == "VideoObject" ) {
             contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
+          } else if ( outputType == "ImageObject" ) {
+            contentMarkup +=  $( "#imageObjectListTemplate" ).render( data.entries[ i ] );
           } else if ( outputType == "Article/Status" ) {
             contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
           } else {
@@ -177,8 +185,15 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
         // Inject the category items markup into the content element.
         $content.html( contentMarkup );
 
-        // Enhance the listview we just injected.
-        $content.find( ":jqmData(role=listview)" ).listview();
+        // Activate PhotoSwipe
+        if ( outputType == "ImageObject" ) {
+          photoSwipeInstance = $( ".gallery a" ).photoSwipe({
+            jQueryMobile: true
+          });
+        } else {
+          // Enhance the listview we just injected.
+          $content.find( ":jqmData(role=listview)" ).listview();
+        }
       } else {
         var item = data.entries[articleId];
         if (singleEntry) {
