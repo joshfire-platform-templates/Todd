@@ -1,4 +1,15 @@
 
+1.2.0 / 2012-12-11
+==================
+
+  * Add PhotoSwipe for ImageObject datasource
+  * Fix display of static datasource
+  * Fix display of datasource with only one item
+  * Fix 'undefined' months
+  * Fix letterbox mode on the iPhone 5
+  * Improve listview with thumbnails
+  * Fix others minor visual glitches
+
 1.1.5 / 2012-11-09
 ==================
 

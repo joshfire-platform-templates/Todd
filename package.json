@@ -1,7 +1,7 @@
 {
   "name": "smoothie",
   "fullName": "Smoothie",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
   "keywords": [
     "generic",
@@ -18,7 +18,7 @@
         "title": "Main tabs",
         "description": "Any type of datasources accepted.",
         "multiple": true,
-        "maxLength":4
+        "maxLength": 4
       }
     },
     "devices": [
