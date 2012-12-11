@@ -3,6 +3,10 @@
   max-width: 100% !important;
 }
 
+p > img {
+  max-width: 100% !important;
+}
+
 .ui-icon-play,
 .ui-icon-doublequaver,
 .ui-icon-quaver,
