@@ -53,7 +53,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
     $page = $( "#content-page" );
   }
 
-      // Get the header for the page.
+  // Get the header for the page.
   var $header = $page.children( ":jqmData(role=header)" ),
 
       // Get the content area element for the page.
@@ -132,16 +132,9 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
       if ( err ) { console.error( err ); return; }
 
       var outputType = dataSources[ dataSourceId ].config.outputType;
-      var staticDS = dataSources[ dataSourceId ].config.db == "static";
+      var singleEntry = (data.entries.length === 1);
 
-      if ( staticDS ) {
-        var staticItem = data.entries[0];
-
-        // NOTE: we're erasing the value of this variable.
-        contentMarkup = $( "#staticTemplate" ).render( staticItem );
-
-        $content.html( contentMarkup );
-      } else if ( articleId === undefined ) {
+      if ( articleId === undefined && !singleEntry) {
 
         var previousDate = null;
 
@@ -181,12 +174,15 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
         $content.find( ":jqmData(role=listview)" ).listview();
       } else {
         var item = data.entries[articleId];
+        if (singleEntry) {
+          item = data.entries[0];
+        }
 
-        if ( item.itemType == "BlogPosting" ) {
+        if ( item["@type"] == "BlogPosting" ) {
           contentMarkup += $( "#blogPostingTemplate" ).render( item );
-        } else if ( item.itemType == "ImageObject" ) {
+        } else if ( item["@type"] == "ImageObject" ) {
           contentMarkup += $( "#imageObjectTemplate" ).render( item );
-        } else if ( item.itemType == "VideoObject" ) {
+        } else if ( item["@type"] == "VideoObject" ) {
           contentMarkup += $( "#videoObjectTemplate" ).render( item );
         } else {
           contentMarkup += $( "#genericTemplate" ).render( item );
@@ -198,7 +194,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         // mediaFactory needs the markup to inserted into the DOM before adding its
         // own code.
-        if ( item.itemType == "VideoObject" ) {
+        if ( item["@type"] == "VideoObject" ) {
           mediaFactory.insert(item, { strategy: "html5" }, 'video-player', function(err) {
             if (err) console.error(err);
           });
