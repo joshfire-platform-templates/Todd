@@ -35,7 +35,7 @@ function extractDay( date ) {
   var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
   var dayNames = [ "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday", "Sunday" ];
 
-  return dayNames[currentDate.getDay()] + "," + dayNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
+  return dayNames[currentDate.getDay()] + "," + monthNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
 }
 
 function createPage( dataSourceId, data, urlObj, articleId ) {
