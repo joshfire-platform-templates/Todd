@@ -12,6 +12,12 @@ if (app.icon) {
   document.head.appendChild(link);
 }
 
+// Prevent letterbox when adding this app to iPhone 5 home screen
+// See http://www.mobilexweb.com/blog/iphone-5-ios-6-html5-developers
+if (window.screen.height==568) { // iPhone 4"
+  document.querySelector("meta[name=viewport]").content = "width=320.1";
+}
+
 document.title = app.name;
 
 function extractTime( date ) {
