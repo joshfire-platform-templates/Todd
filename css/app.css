@@ -7,6 +7,12 @@ p > img {
   max-width: 100% !important;
 }
 
+.ui-li-thumb {
+  background-size: cover !important;
+  height: 100%;
+  width: 80px;
+}
+
 .ui-icon-play,
 .ui-icon-doublequaver,
 .ui-icon-quaver,

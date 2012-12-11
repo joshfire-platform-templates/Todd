@@ -44,11 +44,13 @@
       </li>
     </script>
 
+    <!-- note that we force .ui-li-has-thumb -->
     <script id="mediaObjectListTemplate" type="text/x-jsrender">
-      <li>
+      <li class="ui-li-has-thumb">
         <a href="#datasource={{:dataSourceId}}&article={{:i}}" data-icon="grid">
-          <img src="{{:thumbnail[0].contentURL}}">
+          <div class="ui-li-thumb" style="background: url({{:thumbnail[0].contentURL}}) no-repeat center center"></div>
           <h3>{{:name}}</h3>
+          <p>{{:description}}</p>
         </a>
       </li>
     </script>
