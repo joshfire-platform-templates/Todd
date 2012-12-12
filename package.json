@@ -25,6 +25,7 @@
       {
         "devices": "phone",
         "startfile": "index.html",
+        "orientation": "portrait",
         "images": "marketing/smoothie(380-236)2.png"
       }
     ],
