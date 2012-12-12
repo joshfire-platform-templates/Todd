@@ -146,7 +146,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         if ( outputType == "ImageObject" ) {
           // For PhotoSwipe
-          contentMarkup = "<ul class='gallery'>";
+          contentMarkup = "<style id=\"gallery-style\"></style><ul class='gallery'>";
         } else {
           contentMarkup = "<ul data-role='listview'>";
         }
@@ -187,8 +187,13 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         // Activate PhotoSwipe
         if ( outputType == "ImageObject" ) {
+          // Enhance the style of gallery image
+          // 30 = content page padding, 12 = <li>'s margin+border
+          var imageWidth = ((window.innerWidth - 30) / 3 ) - 12 | 0;
+          $( "#gallery-style" ).text('.gallery li a { width: ' + imageWidth +'px; height: ' + imageWidth +'px}');
           photoSwipeInstance = $( ".gallery a" ).photoSwipe({
-            jQueryMobile: true
+            jQueryMobile: true,
+            preventSlideshow: true
           });
         } else {
           // Enhance the listview we just injected.

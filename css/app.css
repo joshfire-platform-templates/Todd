@@ -30,20 +30,16 @@ p > img {
 .gallery li {
   float: left;
   width: 33.33333333%;
+  text-align: center;
 }
 
 .gallery li a {
-  display: block;
+  display: inline-block;
   margin: 5px;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-
-.gallery li img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-/*#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }*/
 
 .ui-icon-play,
 .ui-icon-doublequaver,
