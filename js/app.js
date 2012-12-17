@@ -3,13 +3,20 @@ var factory = Joshfire.factory,
     app = factory.config.app,
     dataSources = (factory.getDataSource( "main" ) ? factory.getDataSource( "main" ).children : null),
     template = factory.config.template,
-    firstLaunch = true;
+    firstLaunch = true,
+    photoSwipeInstance;
 
 if (app.icon) {
   var link = document.createElement("link");
   link.rel = "apple-touch-icon";
   link.href = app.icon.contentURL;
   document.head.appendChild(link);
+}
+
+// Prevent letterbox when adding this app to iPhone 5 home screen
+// See http://www.mobilexweb.com/blog/iphone-5-ios-6-html5-developers
+if (window.screen.height === 568) { // iPhone 4"
+  document.querySelector("meta[name=viewport]").content = "width=320.1";
 }
 
 document.title = app.name;
@@ -35,25 +42,24 @@ function extractDay( date ) {
   var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
   var dayNames = [ "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday", "Sunday" ];
 
-  return dayNames[currentDate.getDay()] + "," + dayNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
+  return dayNames[currentDate.getDay()] + "," + monthNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
 }
 
 function createPage( dataSourceId, data, urlObj, articleId ) {
 
   $( "#video-player" ).html( "" );
 
-  var $page,
-      contentMarkup = "";
+  var $page;
+  var contentMarkup = "";
 
   // The markup we are going to inject into the content area of the page.
   if ( articleId === undefined ) {
     $page = $( "#list-page" );
-    contentMarkup = "<ul data-role='listview'>";
   } else {
     $page = $( "#content-page" );
   }
 
-      // Get the header for the page.
+  // Get the header for the page.
   var $header = $page.children( ":jqmData(role=header)" ),
 
       // Get the content area element for the page.
@@ -132,18 +138,18 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
       if ( err ) { console.error( err ); return; }
 
       var outputType = dataSources[ dataSourceId ].config.outputType;
-      var staticDS = dataSources[ dataSourceId ].config.db == "static";
+      var singleEntry = (data.entries.length === 1);
 
-      if ( staticDS ) {
-        var staticItem = data.entries[0];
-
-        // NOTE: we're erasing the value of this variable.
-        contentMarkup = $( "#staticTemplate" ).render( staticItem );
-
-        $content.html( contentMarkup );
-      } else if ( articleId === undefined ) {
+      if ( articleId === undefined && !singleEntry) {
 
         var previousDate = null;
+
+        if ( outputType == "ImageObject" ) {
+          // For PhotoSwipe
+          contentMarkup = "<style id=\"gallery-style\"></style><ul class='gallery'>";
+        } else {
+          contentMarkup = "<ul data-role='listview'>";
+        }
 
         // Generate a list item for each item in the category and add it to our markup.
         for ( var i = 0; i < data.entries.length; i++ ) {
@@ -164,8 +170,10 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
           if ( outputType == "BlogPosting" ) {
             contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
-          } else if ( outputType == "ImageObject" || outputType == "VideoObject" ) {
+          } else if ( outputType == "VideoObject" ) {
             contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
+          } else if ( outputType == "ImageObject" ) {
+            contentMarkup +=  $( "#imageObjectListTemplate" ).render( data.entries[ i ] );
           } else if ( outputType == "Article/Status" ) {
             contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
           } else {
@@ -177,16 +185,31 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
         // Inject the category items markup into the content element.
         $content.html( contentMarkup );
 
-        // Enhance the listview we just injected.
-        $content.find( ":jqmData(role=listview)" ).listview();
+        // Activate PhotoSwipe
+        if ( outputType == "ImageObject" ) {
+          // Enhance the style of gallery image
+          // 30 = content page padding, 12 = <li>'s margin+border
+          var imageWidth = ((window.innerWidth - 30) / 3 ) - 12 | 0;
+          $( "#gallery-style" ).text('.gallery li a { width: ' + imageWidth +'px; height: ' + imageWidth +'px}');
+          photoSwipeInstance = $( ".gallery a" ).photoSwipe({
+            jQueryMobile: true,
+            preventSlideshow: true
+          });
+        } else {
+          // Enhance the listview we just injected.
+          $content.find( ":jqmData(role=listview)" ).listview();
+        }
       } else {
         var item = data.entries[articleId];
+        if (singleEntry) {
+          item = data.entries[0];
+        }
 
-        if ( item.itemType == "BlogPosting" ) {
+        if ( item["@type"] == "BlogPosting" ) {
           contentMarkup += $( "#blogPostingTemplate" ).render( item );
-        } else if ( item.itemType == "ImageObject" ) {
+        } else if ( item["@type"] == "ImageObject" ) {
           contentMarkup += $( "#imageObjectTemplate" ).render( item );
-        } else if ( item.itemType == "VideoObject" ) {
+        } else if ( item["@type"] == "VideoObject" ) {
           contentMarkup += $( "#videoObjectTemplate" ).render( item );
         } else {
           contentMarkup += $( "#genericTemplate" ).render( item );
@@ -198,7 +221,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         // mediaFactory needs the markup to inserted into the DOM before adding its
         // own code.
-        if ( item.itemType == "VideoObject" ) {
+        if ( item["@type"] == "VideoObject" ) {
           mediaFactory.insert(item, { strategy: "html5" }, 'video-player', function(err) {
             if (err) console.error(err);
           });
