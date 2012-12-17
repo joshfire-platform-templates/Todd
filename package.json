@@ -10,8 +10,8 @@
   ],
   "joshfire": {
     "images": {
-      "small": "marketing/smoothie(380-236).png",
-      "big": "marketing/smoothie(780-370).png"
+      "small": "marketing/smoothie(440-260).png",
+      "big": "marketing/smoothie(900-431).png"
     },
     "datasources": {
       "main": {
@@ -26,7 +26,7 @@
         "devices": "phone",
         "startfile": "index.html",
         "orientation": "portrait",
-        "images": "marketing/smoothie(380-236)2.png"
+        "images": "marketing/smoothie(440-260).png"
       }
     ],
     "options": {
