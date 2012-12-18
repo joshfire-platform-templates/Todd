@@ -26,7 +26,15 @@
         "devices": "phone",
         "startfile": "index.html",
         "orientation": "portrait",
-        "images": "marketing/smoothie(440-260).png"
+        "images": "marketing/smoothie(440-260).png",
+        "screenshots": [
+          "marketing/phone-1.png",
+          "marketing/phone-2.png",
+          "marketing/phone-3.png",
+          "marketing/phone-4.png",          
+          "marketing/phone-5.png",
+          "marketing/phone-6.png"
+        ]        
       }
     ],
     "options": {
