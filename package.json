@@ -1,7 +1,7 @@
 {
   "name": "smoothie",
   "fullName": "Smoothie",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
   "keywords": [
     "generic",
@@ -23,7 +23,7 @@
     },
     "devices": [
       {
-        "devices": "phone",
+        "devices": "phone-android",
         "startfile": "index.html",
         "orientation": "portrait",
         "images": "marketing/smoothie(440-260).png",
@@ -31,10 +31,38 @@
           "marketing/phone-1.png",
           "marketing/phone-2.png",
           "marketing/phone-3.png",
-          "marketing/phone-4.png",          
+          "marketing/phone-4.png",
           "marketing/phone-5.png",
           "marketing/phone-6.png"
-        ]        
+        ]
+      },
+      {
+        "devices": "phone-web",
+        "startfile": "index.html",
+        "orientation": "portrait",
+        "images": "marketing/smoothie(440-260).png",
+        "screenshots": [
+          "marketing/phone-1.png",
+          "marketing/phone-2.png",
+          "marketing/phone-3.png",
+          "marketing/phone-4.png",
+          "marketing/phone-5.png",
+          "marketing/phone-6.png"
+        ]
+      },
+      {
+        "devices": "phone-blackberry",
+        "startfile": "index.html",
+        "orientation": "portrait",
+        "images": "marketing/smoothie(440-260).png",
+        "screenshots": [
+          "marketing/phone-1.png",
+          "marketing/phone-2.png",
+          "marketing/phone-3.png",
+          "marketing/phone-4.png",
+          "marketing/phone-5.png",
+          "marketing/phone-6.png"
+        ]
       }
     ],
     "options": {
