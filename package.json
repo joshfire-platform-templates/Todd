@@ -1,6 +1,6 @@
 {
-  "name": "Smoothie with Tizen style",
-  "fullName": "smoothie with Tizen style",
+  "name": "Smoothie",
+  "fullName": "smoothie",
   "version": "1.3.0",
   "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
   "keywords": [
