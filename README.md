@@ -27,3 +27,4 @@ TODO
 * Use a special jQuery Mobile version from the [jQuery Mobile Download Builder](http://jquerymobile.com/download-builder/)
 * Improve videos and images lists + single page display
 * Support more datasources
+* "F" is defined for tizen, don't use this Jquery mobile class.

@@ -1,8 +1,8 @@
 {
-  "name": "tizen2",
-  "fullName": "tizen2",
-  "version": "1.0.0",
-  "description": "Tizen",
+  "name": "Smoothie with Tizen style",
+  "fullName": "smoothie with Tizen style",
+  "version": "1.3.0",
+  "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
   "keywords": [
     "generic",
     "polished",
@@ -75,10 +75,9 @@
             "b",
             "c",
             "d",
-            "e",
-            "f"
+            "e"
            ],
-          "default": "f",
+          "default": "a",
           "required": true
         },
         "contentTheme": {
@@ -89,10 +88,9 @@
             "b",
             "c",
             "d",
-            "e",
-            "f"
+            "e"
            ],
-          "default": "f",
+          "default": "c",
           "required": true
         },
         "tabs": {
@@ -138,6 +136,14 @@
               }
             }
           }
+        },
+        "tizenTemplate": {
+          "type": "boolean",
+          "title": "Enabled Tizen style",
+          "default":true,
+          "joshfire:definedFor": [
+            "phone-web"
+          ]
         }
       },
       "form": [
@@ -152,8 +158,7 @@
                 "b": "Blue",
                 "c": "Grey",
                 "d": "White",
-                "e": "Yellow",
-                "f": "Tizen"
+                "e": "Yellow"
               }
             },
             {
@@ -163,8 +168,7 @@
                 "b": "Blue",
                 "c": "Grey",
                 "d": "White",
-                "e": "Yellow",
-                "f": "Tizen"
+                "e": "Yellow"
               }
             }
           ]
@@ -205,6 +209,10 @@
               ]
             }
           ]
+        },
+        {
+          "key": "tizenTemplate",
+          "inlinetitle": "Enabled"
         }
       ]
     },

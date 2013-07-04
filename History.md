@@ -1,4 +1,9 @@
 
+1.3 / 2012-06-04
+==================
+
+  * Add Tizen style, "F" is defined for tizen, don't use this Jquery mobile class.
+
 1.2.1 / 2012-12-12
 ==================
 

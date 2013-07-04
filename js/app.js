@@ -6,6 +6,7 @@ var factory = Joshfire.factory,
     firstLaunch = true,
     photoSwipeInstance;
 
+
 if (app.icon) {
   var link = document.createElement("link");
   link.rel = "apple-touch-icon";
@@ -133,6 +134,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
   $.mobile.showPageLoadingMsg();
 
   if (dataSources) {
+    console.log(dataSources);
     // Get the items from our dataSource
     dataSources[ dataSourceId ].find( {}, function ( err, data ) {
       if ( err ) { console.error( err ); return; }
@@ -239,14 +241,23 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 // Listen for any attempts to call changePage()
 $(document).bind( "pagebeforechange", function( e, data ) {
 
-  // Change theme of our application
+  // Change theme of our application if tizenTemplate is enabled we define f. it's priority
   // TODO: don't do it each page changing...
-  if ( template.options.theme ) {
-    $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": template.options.theme } );
+  if(template.options.tizenTemplate) {
+      $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": "f" } );
+      $( "[data-role=content]" ).attr( { "data-theme": "f" } );
+
+  } else {
+
+    if ( template.options.theme ) {
+      $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": template.options.theme } );
+    }
+    if ( template.options.contentTheme ) {
+      $( "[data-role=content]" ).attr( { "data-theme": template.options.contentTheme } );
+    }
+
   }
-  if ( template.options.contentTheme ) {
-    $( "[data-role=content]" ).attr( { "data-theme": template.options.contentTheme } );
-  }
+
 
   // string = app is asking us to load a page by URL
   if ( typeof data.toPage === "string" ) {
