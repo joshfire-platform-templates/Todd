@@ -134,7 +134,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
   $.mobile.showPageLoadingMsg();
 
   if (dataSources) {
-    console.log(dataSources);
+      
     // Get the items from our dataSource
     dataSources[ dataSourceId ].find( {}, function ( err, data ) {
       if ( err ) { console.error( err ); return; }
