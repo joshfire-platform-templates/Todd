@@ -45,7 +45,7 @@ function extractDay( date ) {
   return dayNames[currentDate.getDay()] + "," + monthNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
 }
 
-function createPage( dataSourceId, data, urlObj, articleId ) {
+function createPage( dataSourceId, data, urlObj, articleId ) {
 
   $( "#video-player" ).html( "" );
 

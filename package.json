@@ -1,8 +1,8 @@
 {
-  "name": "smoothie",
-  "fullName": "Smoothie",
-  "version": "1.2.2",
-  "description": "Generic template based on jQuery Mobile (compatible with all mobile platforms).",
+  "name": "tizen2",
+  "fullName": "tizen2",
+  "version": "1.0.0",
+  "description": "Tizen",
   "keywords": [
     "generic",
     "polished",
@@ -75,9 +75,10 @@
             "b",
             "c",
             "d",
-            "e"
+            "e",
+            "f"
            ],
-          "default": "a",
+          "default": "f",
           "required": true
         },
         "contentTheme": {
@@ -88,9 +89,10 @@
             "b",
             "c",
             "d",
-            "e"
+            "e",
+            "f"
            ],
-          "default": "c",
+          "default": "f",
           "required": true
         },
         "tabs": {
@@ -150,7 +152,8 @@
                 "b": "Blue",
                 "c": "Grey",
                 "d": "White",
-                "e": "Yellow"
+                "e": "Yellow",
+                "f": "Tizen"
               }
             },
             {
@@ -160,7 +163,8 @@
                 "b": "Blue",
                 "c": "Grey",
                 "d": "White",
-                "e": "Yellow"
+                "e": "Yellow",
+                "f": "Tizen"
               }
             }
           ]
