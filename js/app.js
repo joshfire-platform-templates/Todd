@@ -244,8 +244,10 @@ $(document).bind( "pagebeforechange", function( e, data ) {
   // Change theme of our application if tizenTemplate is enabled we define f. it's priority
   // TODO: don't do it each page changing...
   if(template.options.tizenTemplate) {
+
       $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": "f" } );
       $( "[data-role=content]" ).attr( { "data-theme": "f" } );
+      $( "[data-role=page]" ).removeClass("ui-body-c").addClass("ui-body-f");
 
   } else {
 
