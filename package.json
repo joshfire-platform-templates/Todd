@@ -142,7 +142,7 @@
           "title": "Enabled Tizen style",
           "default":true,
           "joshfire:definedFor": [
-            "phone-web"
+            "tizen-phone"
           ]
         }
       },
