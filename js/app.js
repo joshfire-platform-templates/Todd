@@ -3,6 +3,7 @@ var factory = Joshfire.factory,
     app = factory.config.app,
     dataSources = (factory.getDataSource( "main" ) ? factory.getDataSource( "main" ).children : null),
     template = factory.config.template,
+    device = factory.device,
     firstLaunch = true,
     photoSwipeInstance;
 
@@ -242,8 +243,8 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 $(document).bind( "pagebeforechange", function( e, data ) {
 
   // Change theme of our application if tizenTemplate is enabled we define f. it's priority
-  // TODO: don't do it each page changing...
-  if(template.options.tizenTemplate) {
+  // TODO: don't do it each page changing...gi
+  if(template.options.tizenTemplate && device.type == "tizen-phone") {
 
       $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": "f" } );
       $( "[data-role=content]" ).attr( { "data-theme": "f" } );
