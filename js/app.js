@@ -344,6 +344,7 @@ $(document).bind( "pagebeforechange", function( e, data ) {
   if ( typeof data.toPage === "string" ) {
 
     var u = $.mobile.path.parseUrl( data.toPage ),
+        $share = $('#share'),
         re = /^#datasource/;
 
     // We only want to handle URLs that request the data for
@@ -388,11 +389,11 @@ $(document).bind( "pagebeforechange", function( e, data ) {
 });
 
 function share(model, cb) {
-  callback = callback || function () {};
+  cb = cb || function () {};
   if (!model) {
     return callback('No model to share');
   }
-
+  console.log("?");
   Joshfire.factory.getAddOns('share').startActivity({
     data : {
       msg: model.name,
@@ -400,5 +401,5 @@ function share(model, cb) {
     }
   });
 
-  return callback();
+  return cb();
 }
