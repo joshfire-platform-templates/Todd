@@ -47,6 +47,64 @@ function extractDay( date ) {
   return dayNames[currentDate.getDay()] + "," + monthNames[currentDate.getMonth()] + " " + currentDate.getDate() + ", " + currentDate.getFullYear();
 }
 
+function find (dataSourceId, opt, cb) {
+  var skip    = opt.skip || 0;
+  var limit   = opt.limit || 20;
+
+  try {
+    // Get the items from our dataSource
+    dataSources[ dataSourceId ].find( {
+      skip  : skip,
+      limit : limit
+    }, function ( err, data ) {
+      cb(err, data);
+    });
+  } catch (e) {
+    throw new Error('No datasource matching ID "' + dataSourceId + '"');
+  }
+};
+
+function getListItemsMarkup(dataSourceId, data) {
+
+  var itemsMarkup = '';
+  var previousDate = null;
+  var outputType = dataSources[ dataSourceId ].config.outputType;
+
+  if (!data || !data.entries || !data.entries.length) throw new Error ('No data received');
+
+  // Generate a list item for each item in the category and add it to our markup.
+  for ( var i = 0; i < data.entries.length; i++ ) {
+
+    // Our item need to be extended to transmit useful information to the template
+    data.entries[ i ].i = i;
+    data.entries[ i ].dataSourceId = dataSourceId;
+
+    var extractedDay = extractDay( data.entries[ i ].datePublished );
+
+    if ( data.entries[ i ].datePublished ) {
+      if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
+        itemsMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
+        previousDate = extractedDay;
+      }
+      data.entries[ i ].datePublished = extractTime(data.entries[ i ].datePublished);
+    }
+
+    if ( outputType == "BlogPosting" ) {
+      itemsMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
+    } else if ( outputType == "VideoObject" ) {
+      itemsMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
+    } else if ( outputType == "ImageObject" ) {
+      itemsMarkup +=  $( "#imageObjectListTemplate" ).render( data.entries[ i ] );
+    } else if ( outputType == "Article/Status" ) {
+      itemsMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
+    } else {
+      itemsMarkup +=  $( "#genericListTemplate" ).render( data.entries[ i ] );
+    }
+  }
+
+  return itemsMarkup;
+}
+
 function createPage( dataSourceId, data, urlObj, articleId ) {
 
   $( "#video-player" ).html( "" );
@@ -98,102 +156,120 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
   // Inject the footer items markup into the footer element.
   $footer.html( footerMarkup );
 
-  // Pages are lazily enhanced. We call page() on the page
-  // element to make sure it is always enhanced before we
-  // attempt to enhance the listview markup we just injected.
-  // Subsequent calls to page() are ignored since a page/widget
-  // can only be enhanced once.
-  $page.page();
-
-  $footer.trigger( "create" );
-
-  // Now that the page is enhanced, highilight the good item on the footer.
-  $footer.find( "li:nth-child(" + ( parseInt(dataSourceId, 10) + 1 ) + ") a" ).addClass( "ui-btn-active" );
-
-  // Also, display the loading spinner, while waiting for data
-  $.mobile.showPageLoadingMsg();
-
-  // We don't want the data-url of the page we just modified
-  // to be the url that shows up in the browser's location field,
-  // so set the dataUrl option to the URL for the category
-  // we just loaded.
-  if (urlObj) {
-    options.dataUrl = urlObj.href;
-  }
-
-  options.allowSamePageTransition = true;
-  if ( articleId === undefined ) {
-    options.transition = "none";
-  } else {
-    options.transition = "slide";
-  }
-
-  // Now call changePage() and tell it to switch to the page we just modified.
-  $.mobile.changePage( $page, options );
-
-  // Everything is done but loading the content. Display the spinner.
-  $.mobile.showPageLoadingMsg();
-
   if (dataSources) {
-      
-    // Get the items from our dataSource
-    dataSources[ dataSourceId ].find( {}, function ( err, data ) {
+
+
+    // Pages are lazily enhanced. We call page() on the page
+    // element to make sure it is always enhanced before we
+    // attempt to enhance the listview markup we just injected.
+    // Subsequent calls to page() are ignored since a page/widget
+    // can only be enhanced once.
+    $page.page();
+
+    $footer.trigger( "create" );
+
+    // Now that the page is enhanced, highilight the good item on the footer.
+    $footer.find( "li:nth-child(" + ( parseInt(dataSourceId, 10) + 1 ) + ") a" ).addClass( "ui-btn-active" );
+
+    // Also, display the loading spinner, while waiting for data
+    $.mobile.showPageLoadingMsg();
+
+    // We don't want the data-url of the page we just modified
+    // to be the url that shows up in the browser's location field,
+    // so set the dataUrl option to the URL for the category
+    // we just loaded.
+    if (urlObj) {
+      options.dataUrl = urlObj.href;
+    }
+
+    options.allowSamePageTransition = true;
+    if ( articleId === undefined ) {
+      options.transition = "none";
+    } else {
+      options.transition = "slide";
+    }
+
+    // Now call changePage() and tell it to switch to the page we just modified.
+    $.mobile.changePage( $page, options );
+
+    // Everything is done but loading the content. Display the spinner.
+    $.mobile.showPageLoadingMsg();
+
+
+    find(dataSourceId, {
+      skip: 0,
+      limit: 20
+    }, function(err, data) {
+
       if ( err ) { console.error( err ); return; }
 
+      var itemMarkup = '';
+      var lastRequestedPage = 0;
+      var currentPage = 0;
       var outputType = dataSources[ dataSourceId ].config.outputType;
       var singleEntry = (data.entries.length === 1);
 
       if ( articleId === undefined && !singleEntry) {
 
-        var previousDate = null;
+        var list = document.createElement('ul');
 
         if ( outputType == "ImageObject" ) {
           // For PhotoSwipe
-          contentMarkup = "<style id=\"gallery-style\"></style><ul class='gallery'>";
+          list.className = 'gallery'
         } else {
-          contentMarkup = "<ul data-role='listview'>";
+          list.dataset.role = 'listview';
         }
 
-        // Generate a list item for each item in the category and add it to our markup.
-        for ( var i = 0; i < data.entries.length; i++ ) {
-
-          // Our item need to be extended to transmit useful information to the template
-          data.entries[ i ].i = i;
-          data.entries[ i ].dataSourceId = dataSourceId;
-
-          var extractedDay = extractDay( data.entries[ i ].datePublished );
-
-          if ( data.entries[ i ].datePublished ) {
-            if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
-              contentMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
-              previousDate = extractedDay;
-            }
-            data.entries[ i ].datePublished = extractTime(data.entries[ i ].datePublished);
-          }
-
-          if ( outputType == "BlogPosting" ) {
-            contentMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
-          } else if ( outputType == "VideoObject" ) {
-            contentMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
-          } else if ( outputType == "ImageObject" ) {
-            contentMarkup +=  $( "#imageObjectListTemplate" ).render( data.entries[ i ] );
-          } else if ( outputType == "Article/Status" ) {
-            contentMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
-          } else {
-            contentMarkup +=  $( "#genericListTemplate" ).render( data.entries[ i ] );
-          }
-        }
-        contentMarkup += "</ul>";
+        itemsMarkup = getListItemsMarkup(dataSourceId, data);
 
         // Inject the category items markup into the content element.
-        $content.html( contentMarkup );
+        list.innerHTML = itemsMarkup;
+        $content.innerHTML = '';
+        $content[0].appendChild(list);
+
+
+        // Prepare the load more
+        var pendingLoadMore = false;
+
+        window.onscroll = function(e) {
+          var max = Math.ceil($(list).height() - window.innerHeight + Math.ceil($('.ui-navbar').height()) + Math.ceil($('.ui-header').height()));
+          var ratio = window.scrollY / max;
+          if( ratio > 0.8 && !pendingLoadMore) {
+            pendingLoadMore = true;
+            currentPage += 1;
+
+            find(dataSourceId, {
+              skip: currentPage * 20,
+              limit: 20
+            }, function(err, data) {
+              var moreMarkup = getListItemsMarkup(dataSourceId, data);
+              $(list).append(moreMarkup);
+
+              if ( outputType === 'ImageObject') {
+
+              } else {
+                $(list).listview('refresh');
+              }
+
+              pendingLoadMore = false;
+              // Enhance the listview we just injected.
+              //$content.find( ":jqmData(role=listview)" ).listview();
+            });
+          }
+        }
+
 
         // Activate PhotoSwipe
         if ( outputType == "ImageObject" ) {
+
+          //contentMarkup = "<style id=\"gallery-style\"></style><ul class='gallery'>";
+          var galleryStyleTag = document.createElement('style');
+          galleryStyleTag.id = 'gallery-style';
+          $(list).before(galleryStyleTag);
           // Enhance the style of gallery image
           // 30 = content page padding, 12 = <li>'s margin+border
           var imageWidth = ((window.innerWidth - 30) / 3 ) - 12 | 0;
-          $( "#gallery-style" ).text('.gallery li a { width: ' + imageWidth +'px; height: ' + imageWidth +'px}');
+          $( galleryStyleTag ).text('.gallery li a { width: ' + imageWidth +'px; height: ' + imageWidth +'px}');
           photoSwipeInstance = $( ".gallery a" ).photoSwipe({
             jQueryMobile: true,
             preventSlideshow: true
