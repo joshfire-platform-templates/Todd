@@ -41,6 +41,12 @@ p > img {
   background-size: cover;
 }
 
+.ui-icon-custom-share {
+  background-image: url(images/share@2x.png);
+  background-size: 70% 70%;
+  background-position: 65% 50%;
+}
+
 .ui-icon-play,
 .ui-icon-doublequaver,
 .ui-icon-quaver,
