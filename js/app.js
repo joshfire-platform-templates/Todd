@@ -5,7 +5,8 @@ var factory = Joshfire.factory,
     template = factory.config.template,
     device = factory.device,
     firstLaunch = true,
-    photoSwipeInstance;
+    photoSwipeInstance,
+    dataStore = {};
 
 
 if (app.icon) {
@@ -128,6 +129,8 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
       // Get the footer for the page.
       $footer = $page.children( ":jqmData(role=footer)" ),
 
+      $share = $('#share'),
+
       // The markup we are going to inject into the footer area of the page.
       footerMarkup = "<div data-role='navbar'><ul>",
 
@@ -211,6 +214,8 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
       if ( articleId === undefined && !singleEntry) {
 
+        dataStore[dataSourceId] = data.entries;
+
         var list = document.createElement('ul');
 
         if ( outputType == "ImageObject" ) {
@@ -230,7 +235,6 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         // Prepare the load more
         var pendingLoadMore = false;
-
         window.onscroll = function(e) {
           var max = Math.ceil($(list).height() - window.innerHeight + Math.ceil($('.ui-navbar').height()) + Math.ceil($('.ui-header').height()));
           var ratio = window.scrollY / max;
@@ -242,18 +246,17 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
               skip: currentPage * 20,
               limit: 20
             }, function(err, data) {
+
               var moreMarkup = getListItemsMarkup(dataSourceId, data);
               $(list).append(moreMarkup);
 
-              if ( outputType === 'ImageObject') {
-
-              } else {
+              if ( outputType !== 'ImageObject') {
                 $(list).listview('refresh');
               }
 
+              dataStore[dataSourceId].push.apply(dataStore[dataSourceId], data.entries);
               pendingLoadMore = false;
-              // Enhance the listview we just injected.
-              //$content.find( ":jqmData(role=listview)" ).listview();
+
             });
           }
         }
@@ -337,7 +340,6 @@ $(document).bind( "pagebeforechange", function( e, data ) {
 
   }
 
-
   // string = app is asking us to load a page by URL
   if ( typeof data.toPage === "string" ) {
 
@@ -350,10 +352,24 @@ $(document).bind( "pagebeforechange", function( e, data ) {
       var matching = u.hash.match(/.*datasource=([0-9]+)(?:&article=([0-9]+))*/);
       var dataSourceId = matching[1];
       var articleId = matching[2];
-
       if ( dataSourceId !== undefined && articleId === undefined ) {
         createPage( dataSourceId, data, u );
       } else if ( dataSourceId !== undefined ) {
+        try {
+          var model = dataStore[dataSourceId][articleId];
+        } catch (e) {
+          hideShareButton();
+        }
+
+        if (model && model.url && model.name) {
+          $share.off('click');
+          $share.on('touchstart mousedown', function (e) {
+            share(model);
+            e.preventDefault();
+            return false;
+          });
+        }
+
         createPage( dataSourceId, data, u, articleId );
       }
     }
@@ -370,3 +386,19 @@ $(document).bind( "pagebeforechange", function( e, data ) {
     e.preventDefault();
   }
 });
+
+function share(model, cb) {
+  callback = callback || function () {};
+  if (!model) {
+    return callback('No model to share');
+  }
+
+  Joshfire.factory.getAddOns('share').startActivity({
+    data : {
+      msg: model.name,
+      url: model.url
+    }
+  });
+
+  return callback();
+}
