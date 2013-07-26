@@ -362,13 +362,16 @@ $(document).bind( "pagebeforechange", function( e, data ) {
           hideShareButton();
         }
 
+        $share.off('click');
         if (model && model.url && model.name) {
-          $share.off('click');
+          $share.show();
           $share.on('touchstart mousedown', function (e) {
             share(model);
             e.preventDefault();
             return false;
           });
+        } else {
+          $share.hide();
         }
 
         createPage( dataSourceId, data, u, articleId );
@@ -389,17 +392,19 @@ $(document).bind( "pagebeforechange", function( e, data ) {
 });
 
 function share(model, cb) {
+  var shareAddon = Joshfire.factory.getAddOns('share');
   cb = cb || function () {};
   if (!model) {
     return callback('No model to share');
   }
-  console.log("?");
-  Joshfire.factory.getAddOns('share').startActivity({
-    data : {
-      msg: model.name,
-      url: model.url
-    }
-  });
+  if (shareAddon) {
+    shareAddon.startActivity({
+      data : {
+        msg: model.name,
+        url: model.url
+      }
+    });
+  }
 
   return cb();
 }
