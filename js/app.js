@@ -6,7 +6,8 @@ var factory = Joshfire.factory,
     device = factory.device,
     firstLaunch = true,
     photoSwipeInstance,
-    dataStore = {};
+    dataStore = {},
+    loadMoreSpinner;
 
 
 if (app.icon) {
@@ -23,6 +24,10 @@ if (window.screen.height === 568) { // iPhone 4"
 }
 
 document.title = app.name;
+
+loadMoreSpinner = document.createElement('li');
+loadMoreSpinner.className = 'ui-li ui-btn-up-c ui-btn load-more-spinner';
+loadMoreSpinner.appendChild(document.createTextNode('Loading ...'));
 
 function extractTime( date ) {
   var currentDate = new Date( date );
@@ -83,23 +88,23 @@ function getListItemsMarkup(dataSourceId, data) {
     var extractedDay = extractDay( data.entries[ i ].datePublished );
 
     if ( data.entries[ i ].datePublished ) {
-      if ( previousDate !== extractedDay && outputType == "BlogPosting" ) {
-        itemsMarkup += "<li data-role='list-divider'>" + extractedDay + "</li>";
+      if ( previousDate !== extractedDay && outputType == 'BlogPosting' ) {
+        itemsMarkup += '<li data-role="list-divider">' + extractedDay + '</li>';
         previousDate = extractedDay;
       }
       data.entries[ i ].datePublished = extractTime(data.entries[ i ].datePublished);
     }
 
-    if ( outputType == "BlogPosting" ) {
-      itemsMarkup +=  $( "#blogPostingListTemplate" ).render( data.entries[ i ] );
-    } else if ( outputType == "VideoObject" ) {
-      itemsMarkup +=  $( "#mediaObjectListTemplate" ).render( data.entries[ i ] );
-    } else if ( outputType == "ImageObject" ) {
-      itemsMarkup +=  $( "#imageObjectListTemplate" ).render( data.entries[ i ] );
-    } else if ( outputType == "Article/Status" ) {
-      itemsMarkup +=  $( "#statusListTemplate" ).render( data.entries[ i ] );
+    if ( outputType === 'BlogPosting' ) {
+      itemsMarkup +=  $( '#blogPostingListTemplate' ).render( data.entries[ i ] );
+    } else if ( outputType === 'VideoObject' ) {
+      itemsMarkup +=  $( '#mediaObjectListTemplate' ).render( data.entries[ i ] );
+    } else if ( outputType === 'ImageObject' ) {
+      itemsMarkup +=  $( '#imageObjectListTemplate' ).render( data.entries[ i ] );
+    } else if ( outputType === 'Article/Status' ) {
+      itemsMarkup +=  $( '#statusListTemplate' ).render( data.entries[ i ] );
     } else {
-      itemsMarkup +=  $( "#genericListTemplate" ).render( data.entries[ i ] );
+      itemsMarkup +=  $( '#genericListTemplate' ).render( data.entries[ i ] );
     }
   }
 
@@ -108,37 +113,37 @@ function getListItemsMarkup(dataSourceId, data) {
 
 function createPage( dataSourceId, data, urlObj, articleId ) {
 
-  $( "#video-player" ).html( "" );
+  $( '#video-player' ).html( '' );
 
   var $page;
-  var contentMarkup = "";
+  var contentMarkup = '';
 
   // The markup we are going to inject into the content area of the page.
   if ( articleId === undefined ) {
-    $page = $( "#list-page" );
+    $page = $( '#list-page' );
   } else {
-    $page = $( "#content-page" );
+    $page = $( '#content-page' );
   }
 
   // Get the header for the page.
-  var $header = $page.children( ":jqmData(role=header)" ),
+  var $header = $page.children( ':jqmData(role=header)' ),
 
       // Get the content area element for the page.
-      $content = $page.children( ":jqmData(role=content)" ),
+      $content = $page.children( ':jqmData(role=content)' ),
 
       // Get the footer for the page.
-      $footer = $page.children( ":jqmData(role=footer)" ),
+      $footer = $page.children( ':jqmData(role=footer)' ),
 
       $share = $('#share'),
 
       // The markup we are going to inject into the footer area of the page.
-      footerMarkup = "<div data-role='navbar'><ul>",
+      footerMarkup = '<div data-role="navbar"><ul>',
 
       // Set the options used when changing page.
       options = data.options;
 
   // Empty the content area
-  $content.html( "" );
+  $content.html( '' );
 
   var tabs = template.options.tabs;
 
@@ -146,15 +151,15 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
     // Generate a navbar item for each datasources and add it to our markup.
     for ( var i = 0; i < tabs.length; i++ ) {
       var name = ( tabs[ i ] && tabs[ i ].name ) || dataSources[ i ].name;
-      var icon = ( tabs[ i ] && tabs[ i ].icon ) || "grid"; // TODO: depends of data source type instead
+      var icon = ( tabs[ i ] && tabs[ i ].icon ) || 'grid'; // TODO: depends of data source type instead
 
-      footerMarkup += "<li><a href='#datasource=" + i + "' data-icon='" + icon + "'>" + name + "</a></li>";
+      footerMarkup += '<li><a href="#datasource=' + i + '" data-icon="' + icon + '">' + name + '</a></li>';
     }
-    footerMarkup += "</ul></div>";
+    footerMarkup += '</ul></div>';
   }
 
   // Find the h1 element in our header and inject the name of the app into it.
-  $header.find( "h1" ).html( app.name );
+  $header.find( 'h1' ).html( app.name );
 
   // Inject the footer items markup into the footer element.
   $footer.html( footerMarkup );
@@ -169,10 +174,10 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
     // can only be enhanced once.
     $page.page();
 
-    $footer.trigger( "create" );
+    $footer.trigger( 'create' );
 
     // Now that the page is enhanced, highilight the good item on the footer.
-    $footer.find( "li:nth-child(" + ( parseInt(dataSourceId, 10) + 1 ) + ") a" ).addClass( "ui-btn-active" );
+    $footer.find( 'li:nth-child(' + ( parseInt(dataSourceId, 10) + 1 ) + ') a' ).addClass( 'ui-btn-active' );
 
     // Also, display the loading spinner, while waiting for data
     $.mobile.showPageLoadingMsg();
@@ -187,9 +192,9 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
     options.allowSamePageTransition = true;
     if ( articleId === undefined ) {
-      options.transition = "none";
+      options.transition = 'none';
     } else {
-      options.transition = "slide";
+      options.transition = 'slide';
     }
 
     // Now call changePage() and tell it to switch to the page we just modified.
@@ -218,7 +223,7 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         var list = document.createElement('ul');
 
-        if ( outputType == "ImageObject" ) {
+        if ( outputType === 'ImageObject' ) {
           // For PhotoSwipe
           list.className = 'gallery'
         } else {
@@ -242,6 +247,13 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
             pendingLoadMore = true;
             currentPage += 1;
 
+            if ( outputType !== 'ImageObject') {
+              list.appendChild(loadMoreSpinner);
+              $(list).listview('refresh');
+            } else {
+              $.mobile.loading('show');
+            }
+
             find(dataSourceId, {
               skip: currentPage * 20,
               limit: 20
@@ -251,7 +263,10 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
               $(list).append(moreMarkup);
 
               if ( outputType !== 'ImageObject') {
+                list.removeChild(loadMoreSpinner);
                 $(list).listview('refresh');
+              } else {
+                $.mobile.loading('hide');
               }
 
               dataStore[dataSourceId].push.apply(dataStore[dataSourceId], data.entries);
@@ -259,11 +274,11 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
             });
           }
-        }
+        };
 
 
         // Activate PhotoSwipe
-        if ( outputType == "ImageObject" ) {
+        if ( outputType === 'ImageObject' ) {
 
           //contentMarkup = "<style id=\"gallery-style\"></style><ul class='gallery'>";
           var galleryStyleTag = document.createElement('style');
@@ -273,13 +288,13 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
           // 30 = content page padding, 12 = <li>'s margin+border
           var imageWidth = ((window.innerWidth - 30) / 3 ) - 12 | 0;
           $( galleryStyleTag ).text('.gallery li a { width: ' + imageWidth +'px; height: ' + imageWidth +'px}');
-          photoSwipeInstance = $( ".gallery a" ).photoSwipe({
+          photoSwipeInstance = $( '.gallery a' ).photoSwipe({
             jQueryMobile: true,
             preventSlideshow: true
           });
         } else {
           // Enhance the listview we just injected.
-          $content.find( ":jqmData(role=listview)" ).listview();
+          $content.find( ':jqmData(role=listview)' ).listview();
         }
       } else {
         var item = data.entries[articleId];
@@ -287,14 +302,14 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
           item = data.entries[0];
         }
 
-        if ( item["@type"] == "BlogPosting" ) {
-          contentMarkup += $( "#blogPostingTemplate" ).render( item );
-        } else if ( item["@type"] == "ImageObject" ) {
-          contentMarkup += $( "#imageObjectTemplate" ).render( item );
-        } else if ( item["@type"] == "VideoObject" ) {
-          contentMarkup += $( "#videoObjectTemplate" ).render( item );
+        if ( item['@type'] === 'BlogPosting' ) {
+          contentMarkup += $( '#blogPostingTemplate' ).render( item );
+        } else if ( item['@type'] == 'ImageObject' ) {
+          contentMarkup += $( '#imageObjectTemplate' ).render( item );
+        } else if ( item['@type'] == 'VideoObject' ) {
+          contentMarkup += $( '#videoObjectTemplate' ).render( item );
         } else {
-          contentMarkup += $( "#genericTemplate" ).render( item );
+          contentMarkup += $( '#genericTemplate' ).render( item );
         }
 
         // Inject the category items markup into the content element
@@ -303,8 +318,8 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
 
         // mediaFactory needs the markup to inserted into the DOM before adding its
         // own code.
-        if ( item["@type"] == "VideoObject" ) {
-          mediaFactory.insert(item, { strategy: "html5" }, 'video-player', function(err) {
+        if ( item['@type'] == 'VideoObject' ) {
+          mediaFactory.insert(item, { strategy: 'html5' }, 'video-player', function(err) {
             if (err) console.error(err);
           });
         }
@@ -313,35 +328,35 @@ function createPage( dataSourceId, data, urlObj, articleId ) {
       $.mobile.hidePageLoadingMsg();
     });
   } else {
-    $content.html( "<p style=\"text-align: center\">No datasources selected.</p>" );
+    $content.html( '<p style=\"text-align: center\">No datasources selected.</p>' );
     $.mobile.hidePageLoadingMsg();
   }
 }
 
 // Listen for any attempts to call changePage()
-$(document).bind( "pagebeforechange", function( e, data ) {
+$(document).bind( 'pagebeforechange', function( e, data ) {
 
   // Change theme of our application if tizenTemplate is enabled we define f. it's priority
   // TODO: don't do it each page changing...gi
-  if(template.options.tizenTemplate && device.type === "phone-tizen") {
+  if(template.options.tizenTemplate && device.type === 'phone-tizen') {
 
-      $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": "f" } );
-      $( "[data-role=content]" ).attr( { "data-theme": "f" } );
-      $( "[data-role=page]" ).removeClass("ui-body-c").addClass("ui-body-f");
+      $( '[data-role=header], [data-role=footer]' ).attr( { 'data-theme': 'f' } );
+      $( '[data-role=content]' ).attr( { 'data-theme': 'f' } );
+      $( '[data-role=page]' ).removeClass('ui-body-c').addClass('ui-body-f');
 
   } else {
 
     if ( template.options.theme ) {
-      $( "[data-role=header], [data-role=footer]" ).attr( { "data-theme": template.options.theme } );
+      $( '[data-role=header], [data-role=footer]' ).attr( { 'data-theme': template.options.theme } );
     }
     if ( template.options.contentTheme ) {
-      $( "[data-role=content]" ).attr( { "data-theme": template.options.contentTheme } );
+      $( '[data-role=content]' ).attr( { 'data-theme': template.options.contentTheme } );
     }
 
   }
 
   // string = app is asking us to load a page by URL
-  if ( typeof data.toPage === "string" ) {
+  if ( typeof data.toPage === 'string' ) {
 
     var u = $.mobile.path.parseUrl( data.toPage ),
         $share = $('#share'),
